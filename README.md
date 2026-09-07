@@ -76,9 +76,12 @@ Rebuilt from the two files above on every scrape by `build.py`:
 
 `logs.json` is append-only on purpose: `history.jsonl` rows are positional arrays, so a log
 that disappears keeps its slot (later rows just carry `null` there) and indices never shift
-under existing history. Each entry carries a name from
-[ALL.json](https://loglist.certspotter.org/ALL.json) and an `active` flag set by membership in
-[monitor.json](https://loglist.certspotter.org/monitor.json), refreshed every scrape.
+under existing history. Each entry carries a name from Cert Spotter's
+[ALL.json](https://loglist.certspotter.org/ALL.json) — which spells them more readably than
+Chrome does (`Google Argon 2026h2` vs `Google 'Argon2026h2' log`) — plus the log's `state` and
+a derived `active` flag from Chrome's
+[all_logs_list.json](https://www.gstatic.com/ct/log_list/v3/all_logs_list.json), refreshed
+every scrape.
 
 **Both that list and Chrome's own split logs across `logs` (RFC 6962) and `tiled_logs`
 (static-CT).** Reading only `logs` matches 36 of the 74 here; including `tiled_logs` matches
@@ -93,7 +96,7 @@ directory, or just curled.
 ```
 # HELP sct_auditing_ingestion_delay_seconds How far behind the SCT auditing service's ingestion point is for a CT log.
 # TYPE sct_auditing_ingestion_delay_seconds gauge
-sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXMXwMjFaXc=",log_name="Google Argon 2026h2",active="true"} 1616.906
+sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXMXwMjFaXc=",log_name="Google Argon 2026h2",state="usable",active="true"} 1616.906
 ```
 
 | metric | meaning |
@@ -104,13 +107,18 @@ sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXM
 | `sct_auditing_scrape_success` | `1` / `0` for the most recent attempt |
 | `sct_auditing_scrape_timestamp_seconds` | when that attempt happened |
 
-The `active` label is the one to filter on. It reflects membership in Cert Spotter's
-[monitor.json](https://loglist.certspotter.org/monitor.json), which lists active logs only;
-`active="false"` marks a log whose delay grows without bound by design. Alert on the rest:
+Every sample carries `state`, the log's state in Chrome's own list, and `active`, which is
+just `state ∈ {pending, qualified, usable, readonly}` precomputed so you don't have to spell
+that set out in every query. `active="false"` marks a log whose delay grows without bound by
+design. Alert on the rest:
 
 ```promql
 max by (log_name) (sct_auditing_ingestion_delay_seconds{active="true"}) > 86400
 ```
+
+Two `state` values are ours rather than Chrome's: `none` for a log that appears in the list
+with no state object, and `absent` for one Chrome's auditor reports but its own log list does
+not contain at all. Neither is active.
 
 Samples deliberately carry no inline timestamps, so a scrape reflects when Prometheus read
 the file; `sct_auditing_scrape_timestamp_seconds` tells you how stale that read was.
@@ -122,6 +130,8 @@ static page — uPlot from a pinned, SRI-checked CDN URL, no build step — that
 `logs.json` and `history.jsonl` from the same directory and fetches names from Cert Spotter
 at load time (that endpoint sends permissive CORS headers, so the browser can read it
 directly; if it's unreachable the page falls back to the names committed in `logs.json`).
+Each log's state and `active` flag are read from `logs.json` rather than fetched, since
+`build.py` already resolved them against Chrome's list on the last scrape.
 
 The y-axis is log-scaled because delays span seconds to months, and inactive logs are hidden
 by default for the same reason — folding them in stretches the axis to 90 days and squashes
@@ -150,21 +160,22 @@ $ git-history file logs.db data.json --id logId --convert 'json.loads(content)["
 
 ## Reading the numbers
 
-Not every large age is a delay. Of the 74 logs Chrome reports, 46 are active and 28 are
-retired or read-only, with an `ingestedUntil` that legitimately sits months in the past.
+Not every large age is a delay. Of the 74 logs Chrome's auditor reports, 43 are active and 31
+are not, the latter with an `ingestedUntil` that legitimately sits months in the past.
 Only the active set carries signal; normal delay there runs on the order of minutes.
 
-Activity comes from `monitor.json` rather than being inferred from `temporal_interval`,
-which is what an earlier version of this repo did. Inferring it gets 8 logs wrong: Google's
-Daedalus, Crucible, Test Tube, Solera and CoachAndHorses shards all sit inside a valid
-temporal window (or carry none at all) while being test or special-purpose logs that no
-monitor follows. Daedalus in particular shows a ~25-day delay that looks alarming and means
-nothing. Membership in `monitor.json` is a direct statement of what is worth watching, so
-it needs no interpretation.
+Activity comes from each log's `state` in Chrome's `all_logs_list.json`, counting the four
+states `pending`, `qualified`, `usable` and `readonly`. At the time of writing all 43 active
+logs are `usable`; the other three states are handled but currently empty in this set, and 11
+logs are `rejected`.
 
-Cloudflare's Raio shards are the counter-example worth keeping in view: they *are* in the
-active list and were ~56 days behind at the first scrape, which is a real observation
-rather than a classification artifact.
+The auditor and the log list do not agree on membership, which is where the interesting edge
+lives. Ten logs Chrome audits are absent from Chrome's own log list, including every
+Cloudflare Raio shard. Those Raio shards sit ~56 days behind, and an earlier version of this
+repo — which inferred activity from Cert Spotter's `monitor.json` — counted three of them as
+active and so presented that as a genuine ingestion lag. Under Chrome's own states they are
+not tracked at all, and the number means nothing. Ten further logs appear in the list carrying
+no state object.
 
 ## Running it
 

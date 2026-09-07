@@ -56,8 +56,9 @@
   <h1>Chrome SCT auditing ingestion delay</h1>
   <p class="sub">How far behind Chrome's SCT auditing service is at ingesting each
     Certificate Transparency log &mdash; <code>now &minus; ingestedUntil</code>, sampled every
-    15&nbsp;minutes. Names and active status from
-    <a href="https://loglist.certspotter.org/">Cert&nbsp;Spotter</a>.</p>
+    15&nbsp;minutes. Names from <a href="https://loglist.certspotter.org/ALL.json">Cert&nbsp;Spotter</a>,
+    log state from <a href="https://www.gstatic.com/ct/log_list/v3/all_logs_list.json">Chrome's
+    log list</a>.</p>
 
   <div id="status">Loading&hellip;</div>
 
@@ -71,7 +72,7 @@
         <option value="604800">Last 7 days</option>
         <option value="0">All history</option>
       </select>
-      <label class="chk"><input type="checkbox" id="inactive"> Include inactive logs</label>
+      <label class="chk" title="Logs whose Chrome state is not pending, qualified, usable or readonly"><input type="checkbox" id="inactive"> Include inactive logs</label>
       <button id="all">All</button>
       <button id="none">None</button>
     </div>
@@ -249,8 +250,7 @@ async function main() {
       const div = document.createElement("div");
       div.className = "item" + (shown.has(log.i) ? "" : " off") + (log.active ? "" : " inactive");
       div.dataset.i = log.i;
-      div.title = log.active ? log.id
-        : `${log.id}\nnot in Cert Spotter's active log list`;
+      div.title = `${log.id}\nstate: ${log.state || "unknown"}`;
       div.innerHTML =
         `<span class="swatch" style="background:${log.color}"></span>` +
         `<span class="nm"></span><span class="val"></span>`;

@@ -6,10 +6,11 @@ Reads data.json + meta.json (written by scrape.sh) and produces:
   history.jsonl one line per scrape, delays aligned to logs.json, rolling window
   metrics.txt   Prometheus text exposition of the current snapshot
 
-Log names come from Cert Spotter's ALL.json; whether a log is still active comes
-from its monitor.json, which lists active logs only. Note that both files (and
-Chrome's own list) split logs across "logs" (RFC 6962) and "tiled_logs"
-(static-CT); reading only the former silently misses about half of them.
+Log names come from Cert Spotter's ALL.json, which spells them more readably than
+Chrome does ("Google Argon 2026h2" vs "Google 'Argon2026h2' log"). Whether a log
+is active comes from its state in Chrome's own all_logs_list.json. Note that both
+files split logs across "logs" (RFC 6962) and "tiled_logs" (static-CT); reading
+only the former silently misses about half of them.
 """
 import json
 import os
@@ -17,8 +18,12 @@ import sys
 import urllib.request
 from datetime import datetime, timezone
 
-LOGLIST_URL = "https://loglist.certspotter.org/ALL.json"      # names for every log, live or not
-ACTIVE_URL = "https://loglist.certspotter.org/monitor.json"  # active logs only
+NAMES_URL = "https://loglist.certspotter.org/ALL.json"   # readable names for every log
+STATE_URL = "https://www.gstatic.com/ct/log_list/v3/all_logs_list.json"  # Chrome's own states
+
+# Chrome's CT log states. A log counts as active in these four; "rejected" and "retired"
+# do not, nor does a log carrying no state or missing from the list altogether.
+ACTIVE_STATES = frozenset({"pending", "qualified", "usable", "readonly"})
 WINDOW_DAYS = 14          # how much history index.html fetches; git holds the rest
 METRIC_PREFIX = "sct_auditing"
 
@@ -60,19 +65,28 @@ def get_json(url):
 
 
 def fetch_registry_info():
-    """id -> {name, active}. Falls back to the committed registry if either list is unreachable."""
+    """id -> {name, state, active}. Falls back to the committed registry if a list is unreachable."""
     try:
         names = {log["log_id"]: log.get("description") or log["log_id"][:12]
-                 for log in each_log(get_json(LOGLIST_URL))}
-        active = {log["log_id"] for log in each_log(get_json(ACTIVE_URL))}
+                 for log in each_log(get_json(NAMES_URL))}
+        states = {}
+        for log in each_log(get_json(STATE_URL)):
+            keys = list((log.get("state") or {}).keys())
+            states[log["log_id"]] = keys[0] if keys else "none"
     except Exception as e:                      # noqa: BLE001 - any failure falls back
         print(f"warning: could not fetch log lists ({e}); reusing known values", file=sys.stderr)
         return None
-    if not active:
-        print("warning: active list came back empty; reusing known values", file=sys.stderr)
+    if not states:
+        print("warning: Chrome log list came back empty; reusing known values", file=sys.stderr)
         return None
-    return {log_id: {"name": name, "active": log_id in active}
-            for log_id, name in names.items()}
+
+    info = {}
+    for log_id in set(names) | set(states):
+        state = states.get(log_id, "absent")     # reported by Chrome's auditor, not in its list
+        info[log_id] = {"name": names.get(log_id) or log_id[:12],
+                        "state": state,
+                        "active": state in ACTIVE_STATES}
+    return info
 
 
 def escape(v):
@@ -80,7 +94,7 @@ def escape(v):
     return v.replace("\\", r"\\").replace('"', r"\"").replace("\n", r"\n")
 
 
-def write_metrics(observations, meta, active):
+def write_metrics(observations, meta, active, states):
     p = METRIC_PREFIX
     out = []
 
@@ -91,8 +105,9 @@ def write_metrics(observations, meta, active):
 
     if observations:
         labels = {
-            o["id"]: 'log_id="{}",log_name="{}",active="{}"'.format(
-                escape(o["id"]), escape(o["name"]), "true" if active.get(o["id"]) else "false")
+            o["id"]: 'log_id="{}",log_name="{}",state="{}",active="{}"'.format(
+                escape(o["id"]), escape(o["name"]), escape(states.get(o["id"], "absent")),
+                "true" if active.get(o["id"]) else "false")
             for o in observations
         }
         block(f"{p}_ingestion_delay_seconds",
@@ -132,7 +147,7 @@ def main():
     if not meta.get("ok"):
         # Record the failure in the metrics, but add nothing to the history.
         print("last scrape failed; writing metrics only", file=sys.stderr)
-        write_metrics([], meta, {})
+        write_metrics([], meta, {}, {})
         return
 
     data = load_json(path("data.json"))
@@ -145,7 +160,8 @@ def main():
             info = (fresh or {}).get(log_id, {})
             record = {"id": log_id,
                       "name": info.get("name") or log_id[:12],
-                      "active": info.get("active", True)}
+                      "state": info.get("state", "absent"),
+                      "active": info.get("active", False)}
             registry["logs"].append(record)
             known[log_id] = record
         ingested = parse_ts(entry["ingestedUntil"])
@@ -156,7 +172,8 @@ def main():
             "ingested_until": ingested.timestamp(),
         })
 
-    active = {entry["id"]: bool(entry.get("active", True)) for entry in registry["logs"]}
+    active = {entry["id"]: bool(entry.get("active")) for entry in registry["logs"]}
+    states = {entry["id"]: entry.get("state", "absent") for entry in registry["logs"]}
 
     with open(path("logs.json"), "w") as f:
         json.dump(registry, f, indent=1, sort_keys=True)
@@ -176,7 +193,7 @@ def main():
     with open(path("history.jsonl"), "w") as f:
         f.write("\n".join(kept) + "\n")
 
-    write_metrics(observations, meta, active)
+    write_metrics(observations, meta, active, states)
     live = sum(1 for o in observations if active[o["id"]])
     print(f"{len(observations)} logs ({live} active), {len(kept)} history rows")
 
