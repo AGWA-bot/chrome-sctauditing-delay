@@ -5,6 +5,8 @@ Reads data.json + meta.json (written by scrape.sh) and produces:
   logs.json     append-only log registry; array position is a stable series index
   history.jsonl one line per scrape, delays aligned to logs.json, rolling window
   metrics.txt   Prometheus text exposition of the current snapshot
+  events.json   incident state (see events.py)
+  feed.xml      Atom feed of incidents
 
 Log names come from Cert Spotter's ALL.json, which spells them more readably than
 Chrome does ("Google Argon 2026h2" vs "Google 'Argon2026h2' log"). Whether a log
@@ -16,6 +18,8 @@ import json
 import os
 import sys
 import urllib.request
+
+import events
 from datetime import datetime, timezone
 
 NAMES_URL = "https://loglist.certspotter.org/ALL.json"   # readable names for every log
@@ -26,6 +30,12 @@ STATE_URL = "https://www.gstatic.com/ct/log_list/v3/all_logs_list.json"  # Chrom
 ACTIVE_STATES = frozenset({"pending", "qualified", "usable", "readonly"})
 WINDOW_DAYS = 14          # how much history index.html fetches; git holds the rest
 METRIC_PREFIX = "sct_auditing"
+
+# Where the site is published. SITE_URL only builds links, but TAG_AUTHORITY becomes part
+# of every Atom entry id, which is permanent -- change it after the feed has been published
+# and every reader treats every existing entry as new. Set both before the first push.
+SITE_URL = "https://agwa-bot.github.io/chrome-sctauditing-delay"
+TAG_AUTHORITY = "agwa-bot.github.io"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -94,7 +104,7 @@ def escape(v):
     return v.replace("\\", r"\\").replace('"', r"\"").replace("\n", r"\n")
 
 
-def write_metrics(observations, meta, active, states):
+def write_metrics(observations, meta, active, states, open_incidents=0):
     p = METRIC_PREFIX
     out = []
 
@@ -125,6 +135,8 @@ def write_metrics(observations, meta, active, states):
           [f'{p}_scrape_success {1 if meta.get("ok") else 0}'])
     block(f"{p}_scrape_timestamp_seconds", "Unix time of the most recent scrape attempt.",
           [f'{p}_scrape_timestamp_seconds {parse_ts(meta["scraped_at"]).timestamp():.0f}'])
+    block(f"{p}_open_incidents", "Incidents inside their one-week cooldown window.",
+          [f"{p}_open_incidents {open_incidents}"])
 
     with open(path("metrics.txt"), "w") as f:
         f.write("\n".join(out) + "\n")
@@ -147,7 +159,7 @@ def main():
     if not meta.get("ok"):
         # Record the failure in the metrics, but add nothing to the history.
         print("last scrape failed; writing metrics only", file=sys.stderr)
-        write_metrics([], meta, {}, {})
+        write_metrics([], meta, {}, {}, 0)
         return
 
     data = load_json(path("data.json"))
@@ -193,7 +205,15 @@ def main():
     with open(path("history.jsonl"), "w") as f:
         f.write("\n".join(kept) + "\n")
 
-    write_metrics(observations, meta, active, states)
+    state = events.load_state(path("events.json"))
+    events.update(state, [json.loads(ln) for ln in kept], registry,
+                  int(reference.timestamp()), TAG_AUTHORITY)
+    events.save_state(path("events.json"), state)
+    events.write_feed(path("feed.xml"), state, SITE_URL)
+    open_now = sum(1 for e in state["events"]
+                   if int(reference.timestamp()) - events.parse_iso(e["published"]) < events.COOLDOWN)
+
+    write_metrics(observations, meta, active, states, open_now)
     live = sum(1 for o in observations if active[o["id"]])
     print(f"{len(observations)} logs ({live} active), {len(kept)} history rows")
 

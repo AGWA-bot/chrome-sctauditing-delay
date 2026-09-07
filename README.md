@@ -72,6 +72,8 @@ Rebuilt from the two files above on every scrape by `build.py`:
 | `metrics.txt` | Prometheus text exposition of the current snapshot |
 | `logs.json` | append-only log registry; array position is a stable series index |
 | `history.jsonl` | one line per scrape, delays aligned to `logs.json`, rolling 14-day window |
+| `feed.xml` | Atom feed of incidents |
+| `events.json` | incident state the feed is rendered from |
 | `index.html` | the graph, served from GitHub Pages |
 
 `logs.json` is append-only on purpose: `history.jsonl` rows are positional arrays, so a log
@@ -138,6 +140,35 @@ by default for the same reason — folding them in stretches the axis to 90 days
 the active set into the bottom third. Clicking a legend row toggles one log, the filter box
 narrows by name, and hovering reads every visible series at that instant.
 
+## Incident feed
+
+`feed.xml` is an Atom feed of incidents, modelled on
+[ctuptime](https://github.com/mcpherrinm/ctuptime). A log whose ingestion delay exceeds 24
+hours is in an incident. Consecutive samples over the threshold form a run, each run is
+reported at most once, and a log gets at most one event per week — while an event is open,
+later runs fold into it and update its peak delay and the window it covers.
+
+**Entry timestamps never change after publication.** `published` and `updated` are frozen when
+an event is created and are never rewritten, even as the event absorbs later runs and its
+title and body change. Feed readers — Slack in particular — repost an entry whose `updated`
+moves, so this is what stops a long-running incident being announced over and over. The feed's
+own `updated` tracks the newest entry, so it too stays put when nothing new lands.
+
+Consequences worth knowing:
+
+- **Only active logs are considered.** A retired log's delay grows without bound by design, so
+  including them would open an incident for all 31 of them immediately and forever.
+- **An unbroken run yields one event, not one per week.** The cooldown only gates *new* runs;
+  a run already reported never opens a second event, however long it lasts.
+- Entry ids are [tag URIs](https://www.rfc-editor.org/rfc/rfc4151) built from `TAG_AUTHORITY`
+  in `build.py`. They are permanent: change that constant after the feed has been published
+  and every reader treats every existing entry as new. **Set it, and `SITE_URL`, before the
+  first push** — they currently assume `agwa-bot.github.io`.
+
+`events.json` holds the state: the events themselves, the last sample evaluated, and the
+`reported` set of runs already folded into an event. `build.py` replays every sample newer
+than the last evaluation, so a gap in scraping catches up rather than being lost.
+
 ## Deriving the ages
 
 ```console
@@ -181,7 +212,7 @@ no state object.
 
 ```console
 $ ./scrape.sh          # fetch -> data.json + meta.json
-$ ./build.py           # -> metrics.txt, logs.json, history.jsonl
+$ ./build.py           # -> metrics.txt, logs.json, history.jsonl, events.json, feed.xml
 ```
 
 Scheduled every 15 minutes by `.github/workflows/scrape.yml`, plus a `workflow_dispatch` trigger
@@ -215,6 +246,15 @@ GitHub Pages is served from the `main` branch root, so each scrape commit republ
 graph; no separate deploy workflow is involved.
 
 ## Testing the page
+
+`test_events.py` covers incident detection and the feed with no browser needed: opening,
+folding inside the cooldown, a new event after it, immutable timestamps across a fold, inactive
+logs never firing, an unbroken run producing one event, idempotency, retention, Atom validity
+and escaping.
+
+```console
+$ ./test_events.py
+```
 
 `test_page.py` drives `index.html` in headless Chromium: it serves a throwaway copy backed by
 synthetic history, then checks the chart renders, the filter and inactive toggle and range
