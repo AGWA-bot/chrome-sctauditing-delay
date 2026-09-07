@@ -76,8 +76,9 @@ Rebuilt from the two files above on every scrape by `build.py`:
 
 `logs.json` is append-only on purpose: `history.jsonl` rows are positional arrays, so a log
 that disappears keeps its slot (later rows just carry `null` there) and indices never shift
-under existing history. Log names come from
-[Cert Spotter's list](https://loglist.certspotter.org/ALL.json).
+under existing history. Each entry carries a name from
+[ALL.json](https://loglist.certspotter.org/ALL.json) and an `active` flag set by membership in
+[monitor.json](https://loglist.certspotter.org/monitor.json), refreshed every scrape.
 
 **Both that list and Chrome's own split logs across `logs` (RFC 6962) and `tiled_logs`
 (static-CT).** Reading only `logs` matches 36 of the 74 here; including `tiled_logs` matches
@@ -92,7 +93,7 @@ directory, or just curled.
 ```
 # HELP sct_auditing_ingestion_delay_seconds How far behind the SCT auditing service's ingestion point is for a CT log.
 # TYPE sct_auditing_ingestion_delay_seconds gauge
-sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXMXwMjFaXc=",log_name="Google Argon 2026h2",shard_ended="false"} 1616.906
+sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXMXwMjFaXc=",log_name="Google Argon 2026h2",active="true"} 1616.906
 ```
 
 | metric | meaning |
@@ -103,12 +104,12 @@ sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXM
 | `sct_auditing_scrape_success` | `1` / `0` for the most recent attempt |
 | `sct_auditing_scrape_timestamp_seconds` | when that attempt happened |
 
-The `shard_ended` label is the one to filter on — `shard_ended="true"` marks a log whose
-`temporal_interval` has passed, whose delay grows without bound by design. A useful alert
-is on the complement:
+The `active` label is the one to filter on. It reflects membership in Cert Spotter's
+[monitor.json](https://loglist.certspotter.org/monitor.json), which lists active logs only;
+`active="false"` marks a log whose delay grows without bound by design. Alert on the rest:
 
 ```promql
-max by (log_name) (sct_auditing_ingestion_delay_seconds{shard_ended="false"}) > 86400
+max by (log_name) (sct_auditing_ingestion_delay_seconds{active="true"}) > 86400
 ```
 
 Samples deliberately carry no inline timestamps, so a scrape reflects when Prometheus read
@@ -122,8 +123,9 @@ static page — uPlot from a pinned, SRI-checked CDN URL, no build step — that
 at load time (that endpoint sends permissive CORS headers, so the browser can read it
 directly; if it's unreachable the page falls back to the names committed in `logs.json`).
 
-The y-axis is log-scaled because delays span seconds to months, and ended shards are hidden
-by default for the same reason. Clicking a legend row toggles one log, the filter box
+The y-axis is log-scaled because delays span seconds to months, and inactive logs are hidden
+by default for the same reason — folding them in stretches the axis to 90 days and squashes
+the active set into the bottom third. Clicking a legend row toggles one log, the filter box
 narrows by name, and hovering reads every visible series at that instant.
 
 ## Deriving the ages
@@ -148,11 +150,21 @@ $ git-history file logs.db data.json --id logId --convert 'json.loads(content)["
 
 ## Reading the numbers
 
-Not every large age is a delay. The 74 logs include retired, read-only, and future shards
-whose `ingestedUntil` legitimately sits months in the past or pinned at a final entry. The
-signal to watch is the *actively ingesting* set — those whose `ingestedUntil` advances
-between commits — where normal delay runs on the order of minutes. Filter on whether a
-log's value moved recently before treating its age as a fault.
+Not every large age is a delay. Of the 74 logs Chrome reports, 46 are active and 28 are
+retired or read-only, with an `ingestedUntil` that legitimately sits months in the past.
+Only the active set carries signal; normal delay there runs on the order of minutes.
+
+Activity comes from `monitor.json` rather than being inferred from `temporal_interval`,
+which is what an earlier version of this repo did. Inferring it gets 8 logs wrong: Google's
+Daedalus, Crucible, Test Tube, Solera and CoachAndHorses shards all sit inside a valid
+temporal window (or carry none at all) while being test or special-purpose logs that no
+monitor follows. Daedalus in particular shows a ~25-day delay that looks alarming and means
+nothing. Membership in `monitor.json` is a direct statement of what is worth watching, so
+it needs no interpretation.
+
+Cloudflare's Raio shards are the counter-example worth keeping in view: they *are* in the
+active list and were ~56 days behind at the first scrape, which is a real observation
+rather than a classification artifact.
 
 ## Running it
 
@@ -190,3 +202,20 @@ cadence, with synthetic data that changes every value every scrape (real data ch
 
 GitHub Pages is served from the `main` branch root, so each scrape commit republishes the
 graph; no separate deploy workflow is involved.
+
+## Testing the page
+
+`test_page.py` drives `index.html` in headless Chromium: it serves a throwaway copy backed by
+synthetic history, then checks the chart renders, the filter and inactive toggle and range
+selector behave, hovering writes values into the legend, both themes paint, and nothing
+overflows at 390px. The log-name fetch hits Cert Spotter for real, so the run also proves the
+CORS path the page depends on.
+
+```console
+$ python3 -m venv venv && ./venv/bin/pip install playwright
+$ ./venv/bin/playwright install chromium
+$ ./venv/bin/python test_page.py --screenshots /tmp/shots
+```
+
+It is a local dev check, not part of the scrape workflow — the schedule stays a plain
+fetch-and-commit.

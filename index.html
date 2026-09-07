@@ -44,7 +44,7 @@
   .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .val { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums;
          font-size: 12px; flex: none; }
-  .ended .nm { text-decoration: line-through; }
+  .inactive .nm { text-decoration: line-through; }
   footer { margin-top: 34px; padding-top: 14px; border-top: 1px solid var(--line);
            color: var(--muted); font-size: 13px; }
   footer a { color: var(--accent); }
@@ -56,7 +56,8 @@
   <h1>Chrome SCT auditing ingestion delay</h1>
   <p class="sub">How far behind Chrome's SCT auditing service is at ingesting each
     Certificate Transparency log &mdash; <code>now &minus; ingestedUntil</code>, sampled every
-    15&nbsp;minutes. Names from <a href="https://loglist.certspotter.org/ALL.json">Cert&nbsp;Spotter</a>.</p>
+    15&nbsp;minutes. Names and active status from
+    <a href="https://loglist.certspotter.org/">Cert&nbsp;Spotter</a>.</p>
 
   <div id="status">Loading&hellip;</div>
 
@@ -70,7 +71,7 @@
         <option value="604800">Last 7 days</option>
         <option value="0">All history</option>
       </select>
-      <label class="chk"><input type="checkbox" id="ended"> Include ended shards</label>
+      <label class="chk"><input type="checkbox" id="inactive"> Include inactive logs</label>
       <button id="all">All</button>
       <button id="none">None</button>
     </div>
@@ -95,13 +96,27 @@
 const LOGLIST = "https://loglist.certspotter.org/ALL.json";
 const MIN_DELAY = 1;   // log scale cannot plot <= 0 (clock skew can make a delay negative)
 
+const UNITS = [[86400, "d"], [3600, "h"], [60, "m"], [1, "s"]];
 const fmtDur = (s) => {
   if (s == null) return "—";
-  if (s < 90) return Math.round(s) + "s";
-  if (s < 3600) return (s / 60).toFixed(s < 600 ? 1 : 0) + "m";
-  if (s < 172800) return (s / 3600).toFixed(s < 36000 ? 1 : 0) + "h";
-  return (s / 86400).toFixed(s < 864000 ? 1 : 0) + "d";
+  for (const [n, suffix] of UNITS) {
+    if (s >= n) {
+      const v = s / n;
+      return (v >= 10 || Number.isInteger(v) ? Math.round(v) : v.toFixed(1)) + suffix;
+    }
+  }
+  return Math.round(s) + "s";
 };
+
+// Explicit ticks at durations a human reads at a glance. Left to itself a log axis
+// picks 1-2-5x10^n seconds, which renders as 50s / 8.3m / 33m / 5.6h / 28h.
+const Y_TICKS = [1, 5, 15, 60, 300, 900, 3600, 10800, 21600, 86400,
+                 259200, 604800, 2592000, 7776000, 31536000];
+
+// uPlot paints to canvas, and canvas silently ignores "var(--x)" as a color -- it keeps
+// whatever strokeStyle was set last. Resolve the custom properties to real values first.
+const cssVar = (name) =>
+  getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#888";
 
 // Golden-angle hues give 70+ series distinguishable colors without a hand-picked palette.
 const colorFor = (i) => {
@@ -143,23 +158,23 @@ async function main() {
     ...entry,
     i,
     name: freshNames[entry.id] || entry.name,
-    ended: entry.end ? Date.parse(entry.end) / 1000 < now : false,
+    active: entry.active !== false,
     color: colorFor(i),
     latest: rows[rows.length - 1].d[i],
   }));
 
-  const shown = new Set(logs.filter(l => !l.ended).map(l => l.i));
+  const shown = new Set(logs.filter(l => l.active).map(l => l.i));
   const el = {
     chart: document.getElementById("chart"), legend: document.getElementById("legend"),
     filter: document.getElementById("filter"), range: document.getElementById("range"),
-    ended: document.getElementById("ended"),
+    inactive: document.getElementById("inactive"),
   };
   let plot = null;
 
   const visible = () => {
     const q = el.filter.value.trim().toLowerCase();
     return logs.filter(l =>
-      shown.has(l.i) && (el.ended.checked || !l.ended) &&
+      shown.has(l.i) && (el.inactive.checked || l.active) &&
       (!q || l.name.toLowerCase().includes(q)));
   };
 
@@ -176,6 +191,8 @@ async function main() {
         return v == null ? null : Math.max(v, MIN_DELAY);
       }));
 
+    const axisInk = cssVar("--muted"), gridInk = cssVar("--line");
+
     if (plot) { plot.destroy(); plot = null; }
     el.chart.innerHTML = "";
     if (series.length === 0) {
@@ -187,19 +204,23 @@ async function main() {
       width: el.chart.clientWidth || 900,
       height: 430,
       cursor: { focus: { prox: 24 } },
+      focus: { alpha: 0.12 },      // 46 overlapping series: dim the rest on hover
       legend: { show: false },
       scales: { y: { distr: 3 } },   // log10: delays span seconds to months
       axes: [
-        { stroke: "var(--muted)", grid: { stroke: "var(--line)", width: 1 },
-          ticks: { stroke: "var(--line)" } },
-        { stroke: "var(--muted)", grid: { stroke: "var(--line)", width: 1 },
-          ticks: { stroke: "var(--line)" }, size: 58,
-          values: (u, ticks) => ticks.map(fmtDur) },
+        { stroke: axisInk, grid: { stroke: gridInk, width: 1 },
+          ticks: { stroke: gridInk } },
+        { stroke: axisInk, grid: { stroke: gridInk, width: 1 },
+          ticks: { stroke: gridInk }, size: 52,
+          splits: (u, ax, min, max) => Y_TICKS.filter(v => v >= min && v <= max),
+          // a log axis hides non-decade labels by default; every tick here is deliberate
+          filter: (u, splits) => splits,
+          values: (u, splits) => splits.map(fmtDur) },
       ],
       series: [
         { value: (u, v) => v == null ? "" : new Date(v * 1000).toISOString().slice(0, 16).replace("T", " ") + "Z" },
         ...series.map(log => ({
-          label: log.name, stroke: log.color, width: 1.5,
+          label: log.name, stroke: log.color, width: 1, alpha: 0.85,
           points: { show: false }, spanGaps: false,
           value: (u, v) => fmtDur(v),
         })),
@@ -220,15 +241,16 @@ async function main() {
   function renderLegend() {
     const q = el.filter.value.trim().toLowerCase();
     const list = logs
-      .filter(l => (el.ended.checked || !l.ended) && (!q || l.name.toLowerCase().includes(q)))
+      .filter(l => (el.inactive.checked || l.active) && (!q || l.name.toLowerCase().includes(q)))
       .sort((a, b) => (b.latest ?? -1) - (a.latest ?? -1));
 
     el.legend.innerHTML = "";
     for (const log of list) {
       const div = document.createElement("div");
-      div.className = "item" + (shown.has(log.i) ? "" : " off") + (log.ended ? " ended" : "");
+      div.className = "item" + (shown.has(log.i) ? "" : " off") + (log.active ? "" : " inactive");
       div.dataset.i = log.i;
-      div.title = log.ended ? `${log.id}\nshard ended ${log.end.slice(0, 10)}` : log.id;
+      div.title = log.active ? log.id
+        : `${log.id}\nnot in Cert Spotter's active log list`;
       div.innerHTML =
         `<span class="swatch" style="background:${log.color}"></span>` +
         `<span class="nm"></span><span class="val"></span>`;
@@ -246,25 +268,26 @@ async function main() {
   const refresh = () => { renderLegend(); draw(); };
   el.filter.oninput = refresh;
   el.range.onchange = draw;
-  el.ended.onchange = () => {
+  el.inactive.onchange = () => {
     // The checkbox widens the scope, so opt those series in (and back out) as it flips;
     // otherwise ticking it would add legend rows but leave the chart unchanged.
     for (const l of logs)
-      if (l.ended) el.ended.checked ? shown.add(l.i) : shown.delete(l.i);
+      if (!l.active) el.inactive.checked ? shown.add(l.i) : shown.delete(l.i);
     refresh();
   };
   document.getElementById("all").onclick = () => {
-    for (const l of logs) if (el.ended.checked || !l.ended) shown.add(l.i);
+    for (const l of logs) if (el.inactive.checked || l.active) shown.add(l.i);
     refresh();
   };
   document.getElementById("none").onclick = () => { shown.clear(); refresh(); };
 
   let t;
   addEventListener("resize", () => { clearTimeout(t); t = setTimeout(draw, 150); });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => refresh());
 
-  const live = logs.filter(l => !l.ended).length;
+  const live = logs.filter(l => l.active).length;
   document.getElementById("meta").textContent =
-    `${logs.length} logs (${live} in an active shard window) · ` +
+    `${logs.length} logs (${live} active) · ` +
     `${rows.length} samples · last scrape ${new Date(now * 1000).toISOString().replace("T", " ").slice(0, 19)}Z`;
 
   document.getElementById("status").hidden = true;

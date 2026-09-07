@@ -6,9 +6,10 @@ Reads data.json + meta.json (written by scrape.sh) and produces:
   history.jsonl one line per scrape, delays aligned to logs.json, rolling window
   metrics.txt   Prometheus text exposition of the current snapshot
 
-Log names come from Cert Spotter's list. Note that both that list and Chrome's
-split logs across "logs" (RFC 6962) and "tiled_logs" (static-CT); reading only
-the former silently misses about half of them.
+Log names come from Cert Spotter's ALL.json; whether a log is still active comes
+from its monitor.json, which lists active logs only. Note that both files (and
+Chrome's own list) split logs across "logs" (RFC 6962) and "tiled_logs"
+(static-CT); reading only the former silently misses about half of them.
 """
 import json
 import os
@@ -16,7 +17,8 @@ import sys
 import urllib.request
 from datetime import datetime, timezone
 
-LOGLIST_URL = "https://loglist.certspotter.org/ALL.json"
+LOGLIST_URL = "https://loglist.certspotter.org/ALL.json"      # names for every log, live or not
+ACTIVE_URL = "https://loglist.certspotter.org/monitor.json"  # active logs only
 WINDOW_DAYS = 14          # how much history index.html fetches; git holds the rest
 METRIC_PREFIX = "sct_auditing"
 
@@ -44,24 +46,33 @@ def load_json(p, default=None):
         return default
 
 
-def fetch_names():
-    """id -> {name, end}. Falls back to the committed registry if the list is unreachable."""
-    try:
-        with urllib.request.urlopen(LOGLIST_URL, timeout=60) as r:
-            listing = json.load(r)
-    except Exception as e:                      # noqa: BLE001 - any failure falls back
-        print(f"warning: could not fetch log list ({e}); reusing known names", file=sys.stderr)
-        return None
-
-    names = {}
+def each_log(listing):
+    """Both list files split logs across `logs` and `tiled_logs`; reading one misses half."""
     for op in listing.get("operators", []):
         for log in list(op.get("logs") or []) + list(op.get("tiled_logs") or []):
             if "log_id" in log:
-                names[log["log_id"]] = {
-                    "name": log.get("description") or log["log_id"][:12],
-                    "end": (log.get("temporal_interval") or {}).get("end_exclusive"),
-                }
-    return names
+                yield log
+
+
+def get_json(url):
+    with urllib.request.urlopen(url, timeout=60) as r:
+        return json.load(r)
+
+
+def fetch_registry_info():
+    """id -> {name, active}. Falls back to the committed registry if either list is unreachable."""
+    try:
+        names = {log["log_id"]: log.get("description") or log["log_id"][:12]
+                 for log in each_log(get_json(LOGLIST_URL))}
+        active = {log["log_id"] for log in each_log(get_json(ACTIVE_URL))}
+    except Exception as e:                      # noqa: BLE001 - any failure falls back
+        print(f"warning: could not fetch log lists ({e}); reusing known values", file=sys.stderr)
+        return None
+    if not active:
+        print("warning: active list came back empty; reusing known values", file=sys.stderr)
+        return None
+    return {log_id: {"name": name, "active": log_id in active}
+            for log_id, name in names.items()}
 
 
 def escape(v):
@@ -69,7 +80,7 @@ def escape(v):
     return v.replace("\\", r"\\").replace('"', r"\"").replace("\n", r"\n")
 
 
-def write_metrics(observations, meta, ended):
+def write_metrics(observations, meta, active):
     p = METRIC_PREFIX
     out = []
 
@@ -80,8 +91,8 @@ def write_metrics(observations, meta, ended):
 
     if observations:
         labels = {
-            o["id"]: 'log_id="{}",log_name="{}",shard_ended="{}"'.format(
-                escape(o["id"]), escape(o["name"]), "true" if ended.get(o["id"]) else "false")
+            o["id"]: 'log_id="{}",log_name="{}",active="{}"'.format(
+                escape(o["id"]), escape(o["name"]), "true" if active.get(o["id"]) else "false")
             for o in observations
         }
         block(f"{p}_ingestion_delay_seconds",
@@ -112,7 +123,7 @@ def main():
     registry = load_json(path("logs.json"), {"logs": []})
     known = {entry["id"]: entry for entry in registry["logs"]}
 
-    fresh = fetch_names()
+    fresh = fetch_registry_info()
     if fresh:
         for entry in registry["logs"]:                    # refresh names in place
             if entry["id"] in fresh:
@@ -134,7 +145,7 @@ def main():
             info = (fresh or {}).get(log_id, {})
             record = {"id": log_id,
                       "name": info.get("name") or log_id[:12],
-                      "end": info.get("end")}
+                      "active": info.get("active", True)}
             registry["logs"].append(record)
             known[log_id] = record
         ingested = parse_ts(entry["ingestedUntil"])
@@ -145,10 +156,7 @@ def main():
             "ingested_until": ingested.timestamp(),
         })
 
-    ended = {}
-    for entry in registry["logs"]:
-        end = entry.get("end")
-        ended[entry["id"]] = bool(end and parse_ts(end.replace("+00:00", "")) < reference)
+    active = {entry["id"]: bool(entry.get("active", True)) for entry in registry["logs"]}
 
     with open(path("logs.json"), "w") as f:
         json.dump(registry, f, indent=1, sort_keys=True)
@@ -168,9 +176,9 @@ def main():
     with open(path("history.jsonl"), "w") as f:
         f.write("\n".join(kept) + "\n")
 
-    write_metrics(observations, meta, ended)
-    live = sum(1 for o in observations if not ended[o["id"]])
-    print(f"{len(observations)} logs ({live} live), {len(kept)} history rows")
+    write_metrics(observations, meta, active)
+    live = sum(1 for o in observations if active[o["id"]])
+    print(f"{len(observations)} logs ({live} active), {len(kept)} history rows")
 
 
 def load_text(p):
