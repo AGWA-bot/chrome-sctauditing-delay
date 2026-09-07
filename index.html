@@ -1,0 +1,279 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chrome SCT auditing ingestion delay</title>
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css"
+      integrity="sha384-IfV0B7MIOYuO95kO9G5ySKPz/85zqFNOAs8iy4tkK5zd9izhJAB8b7lHrwYqqmYE"
+      crossorigin="anonymous">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fff; --fg: #16181d; --muted: #5c6370;
+    --line: #d9dde3; --panel: #f6f7f9; --accent: #2c6fd1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14161a; --fg: #e6e8ec; --muted: #9aa2ae;
+            --line: #2b2f36; --panel: #1b1e23; --accent: #6ea8ff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 21px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .sub a { color: var(--accent); }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+  input[type=search], select {
+    font: inherit; padding: 6px 10px; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--bg); color: var(--fg); }
+  input[type=search] { min-width: 220px; flex: 1 1 220px; }
+  button { font: inherit; padding: 6px 12px; border: 1px solid var(--line);
+           border-radius: 6px; background: var(--panel); color: var(--fg); cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  label.chk { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+  #chart { min-height: 420px; }
+  .uplot { font-family: inherit !important; }
+  #legend { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 2px; }
+  .item { display: flex; align-items: center; gap: 8px; padding: 3px 6px;
+          border-radius: 5px; cursor: pointer; font-size: 13px; }
+  .item:hover { background: var(--panel); }
+  .item.off { opacity: 0.38; }
+  .swatch { width: 11px; height: 11px; border-radius: 2px; flex: none; }
+  .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .val { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums;
+         font-size: 12px; flex: none; }
+  .ended .nm { text-decoration: line-through; }
+  footer { margin-top: 34px; padding-top: 14px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+  footer a { color: var(--accent); }
+  code { background: var(--panel); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  #status { color: var(--muted); padding: 40px 0; }
+</style>
+
+<main>
+  <h1>Chrome SCT auditing ingestion delay</h1>
+  <p class="sub">How far behind Chrome's SCT auditing service is at ingesting each
+    Certificate Transparency log &mdash; <code>now &minus; ingestedUntil</code>, sampled every
+    15&nbsp;minutes. Names from <a href="https://loglist.certspotter.org/ALL.json">Cert&nbsp;Spotter</a>.</p>
+
+  <div id="status">Loading&hellip;</div>
+
+  <div id="app" hidden>
+    <div class="bar">
+      <input type="search" id="filter" placeholder="Filter logs (e.g. google, nimbus)" autocomplete="off">
+      <select id="range">
+        <option value="21600">Last 6 hours</option>
+        <option value="86400" selected>Last 24 hours</option>
+        <option value="259200">Last 3 days</option>
+        <option value="604800">Last 7 days</option>
+        <option value="0">All history</option>
+      </select>
+      <label class="chk"><input type="checkbox" id="ended"> Include ended shards</label>
+      <button id="all">All</button>
+      <button id="none">None</button>
+    </div>
+    <div id="chart"></div>
+    <div id="legend"></div>
+  </div>
+
+  <footer>
+    <span id="meta"></span> &middot;
+    <a href="metrics.txt">Prometheus metrics</a> &middot;
+    <a href="history.jsonl">history.jsonl</a> &middot;
+    <a href="data.json">data.json</a>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.iife.min.js"
+        integrity="sha384-Gx3t0zdBAuQOuvvmaLZj7HKEiSgWTAs+VdtNY7wt19QDPTDQjFIwAuXDj0zeN00c"
+        crossorigin="anonymous"></script>
+<script>
+"use strict";
+
+const LOGLIST = "https://loglist.certspotter.org/ALL.json";
+const MIN_DELAY = 1;   // log scale cannot plot <= 0 (clock skew can make a delay negative)
+
+const fmtDur = (s) => {
+  if (s == null) return "—";
+  if (s < 90) return Math.round(s) + "s";
+  if (s < 3600) return (s / 60).toFixed(s < 600 ? 1 : 0) + "m";
+  if (s < 172800) return (s / 3600).toFixed(s < 36000 ? 1 : 0) + "h";
+  return (s / 86400).toFixed(s < 864000 ? 1 : 0) + "d";
+};
+
+// Golden-angle hues give 70+ series distinguishable colors without a hand-picked palette.
+const colorFor = (i) => {
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  return `hsl(${(i * 137.508) % 360} ${dark ? "65% 62%" : "72% 42%"})`;
+};
+
+async function loadNames() {
+  // Cert Spotter splits logs across `logs` (RFC 6962) and `tiled_logs` (static-CT);
+  // reading only the first misses about half of them.
+  try {
+    const list = await (await fetch(LOGLIST, { cache: "no-cache" })).json();
+    const out = {};
+    for (const op of list.operators || [])
+      for (const log of [...(op.logs || []), ...(op.tiled_logs || [])])
+        if (log.log_id) out[log.log_id] = log.description;
+    return out;
+  } catch (e) {
+    console.warn("log list unavailable, falling back to committed names", e);
+    return {};
+  }
+}
+
+async function main() {
+  const [registry, historyText, freshNames] = await Promise.all([
+    fetch("logs.json", { cache: "no-cache" }).then(r => r.json()),
+    fetch("history.jsonl", { cache: "no-cache" }).then(r => r.text()),
+    loadNames(),
+  ]);
+
+  const rows = historyText.trim().split("\n").filter(Boolean).map(JSON.parse);
+  if (!rows.length) {
+    document.getElementById("status").textContent = "No history yet — the first scrapes are still landing.";
+    return;
+  }
+
+  const now = rows[rows.length - 1].t;
+  const logs = registry.logs.map((entry, i) => ({
+    ...entry,
+    i,
+    name: freshNames[entry.id] || entry.name,
+    ended: entry.end ? Date.parse(entry.end) / 1000 < now : false,
+    color: colorFor(i),
+    latest: rows[rows.length - 1].d[i],
+  }));
+
+  const shown = new Set(logs.filter(l => !l.ended).map(l => l.i));
+  const el = {
+    chart: document.getElementById("chart"), legend: document.getElementById("legend"),
+    filter: document.getElementById("filter"), range: document.getElementById("range"),
+    ended: document.getElementById("ended"),
+  };
+  let plot = null;
+
+  const visible = () => {
+    const q = el.filter.value.trim().toLowerCase();
+    return logs.filter(l =>
+      shown.has(l.i) && (el.ended.checked || !l.ended) &&
+      (!q || l.name.toLowerCase().includes(q)));
+  };
+
+  function draw() {
+    const span = +el.range.value;
+    const from = span ? now - span : 0;
+    const kept = rows.filter(r => r.t >= from);
+    const series = visible();
+
+    const data = [kept.map(r => r.t)];
+    for (const log of series)
+      data.push(kept.map(r => {
+        const v = r.d[log.i];
+        return v == null ? null : Math.max(v, MIN_DELAY);
+      }));
+
+    if (plot) { plot.destroy(); plot = null; }
+    el.chart.innerHTML = "";
+    if (series.length === 0) {
+      el.chart.innerHTML = '<p style="color:var(--muted);padding:40px 0">No logs selected.</p>';
+      return;
+    }
+
+    plot = new uPlot({
+      width: el.chart.clientWidth || 900,
+      height: 430,
+      cursor: { focus: { prox: 24 } },
+      legend: { show: false },
+      scales: { y: { distr: 3 } },   // log10: delays span seconds to months
+      axes: [
+        { stroke: "var(--muted)", grid: { stroke: "var(--line)", width: 1 },
+          ticks: { stroke: "var(--line)" } },
+        { stroke: "var(--muted)", grid: { stroke: "var(--line)", width: 1 },
+          ticks: { stroke: "var(--line)" }, size: 58,
+          values: (u, ticks) => ticks.map(fmtDur) },
+      ],
+      series: [
+        { value: (u, v) => v == null ? "" : new Date(v * 1000).toISOString().slice(0, 16).replace("T", " ") + "Z" },
+        ...series.map(log => ({
+          label: log.name, stroke: log.color, width: 1.5,
+          points: { show: false }, spanGaps: false,
+          value: (u, v) => fmtDur(v),
+        })),
+      ],
+      hooks: {
+        setCursor: [u => {
+          const idx = u.cursor.idx;
+          for (const log of series) {
+            const node = el.legend.querySelector(`[data-i="${log.i}"] .val`);
+            if (node) node.textContent = idx == null ? fmtDur(log.latest)
+                                                     : fmtDur(u.data[series.indexOf(log) + 1][idx]);
+          }
+        }],
+      },
+    }, data, el.chart);
+  }
+
+  function renderLegend() {
+    const q = el.filter.value.trim().toLowerCase();
+    const list = logs
+      .filter(l => (el.ended.checked || !l.ended) && (!q || l.name.toLowerCase().includes(q)))
+      .sort((a, b) => (b.latest ?? -1) - (a.latest ?? -1));
+
+    el.legend.innerHTML = "";
+    for (const log of list) {
+      const div = document.createElement("div");
+      div.className = "item" + (shown.has(log.i) ? "" : " off") + (log.ended ? " ended" : "");
+      div.dataset.i = log.i;
+      div.title = log.ended ? `${log.id}\nshard ended ${log.end.slice(0, 10)}` : log.id;
+      div.innerHTML =
+        `<span class="swatch" style="background:${log.color}"></span>` +
+        `<span class="nm"></span><span class="val"></span>`;
+      div.querySelector(".nm").textContent = log.name;
+      div.querySelector(".val").textContent = fmtDur(log.latest);
+      div.onclick = () => {
+        shown.has(log.i) ? shown.delete(log.i) : shown.add(log.i);
+        div.classList.toggle("off");
+        draw();
+      };
+      el.legend.appendChild(div);
+    }
+  }
+
+  const refresh = () => { renderLegend(); draw(); };
+  el.filter.oninput = refresh;
+  el.range.onchange = draw;
+  el.ended.onchange = () => {
+    // The checkbox widens the scope, so opt those series in (and back out) as it flips;
+    // otherwise ticking it would add legend rows but leave the chart unchanged.
+    for (const l of logs)
+      if (l.ended) el.ended.checked ? shown.add(l.i) : shown.delete(l.i);
+    refresh();
+  };
+  document.getElementById("all").onclick = () => {
+    for (const l of logs) if (el.ended.checked || !l.ended) shown.add(l.i);
+    refresh();
+  };
+  document.getElementById("none").onclick = () => { shown.clear(); refresh(); };
+
+  let t;
+  addEventListener("resize", () => { clearTimeout(t); t = setTimeout(draw, 150); });
+
+  const live = logs.filter(l => !l.ended).length;
+  document.getElementById("meta").textContent =
+    `${logs.length} logs (${live} in an active shard window) · ` +
+    `${rows.length} samples · last scrape ${new Date(now * 1000).toISOString().replace("T", " ").slice(0, 19)}Z`;
+
+  document.getElementById("status").hidden = true;
+  document.getElementById("app").hidden = false;
+  refresh();
+}
+
+main().catch(e => {
+  console.error(e);
+  document.getElementById("status").textContent = "Failed to load: " + e.message;
+});
+</script>

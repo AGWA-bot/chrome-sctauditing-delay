@@ -63,6 +63,69 @@ unchanged. That heartbeat is what lets you tell "no log advanced for two hours" 
 "the scraper was broken for two hours". Failed fetches are recorded with `"ok": false` and
 leave the last good `data.json` in place.
 
+### Derived artifacts
+
+Rebuilt from the two files above on every scrape by `build.py`:
+
+| file | what it is |
+| --- | --- |
+| `metrics.txt` | Prometheus text exposition of the current snapshot |
+| `logs.json` | append-only log registry; array position is a stable series index |
+| `history.jsonl` | one line per scrape, delays aligned to `logs.json`, rolling 14-day window |
+| `index.html` | the graph, served from GitHub Pages |
+
+`logs.json` is append-only on purpose: `history.jsonl` rows are positional arrays, so a log
+that disappears keeps its slot (later rows just carry `null` there) and indices never shift
+under existing history. Log names come from
+[Cert Spotter's list](https://loglist.certspotter.org/ALL.json).
+
+**Both that list and Chrome's own split logs across `logs` (RFC 6962) and `tiled_logs`
+(static-CT).** Reading only `logs` matches 36 of the 74 here; including `tiled_logs` matches
+all 74. This bit us once already — it's the single easiest thing to get wrong.
+
+## Prometheus metrics
+
+`metrics.txt` is regenerated each scrape and served as a static file, so it can be pulled by
+a Prometheus `static_configs` scrape, dropped into a node_exporter textfile collector
+directory, or just curled.
+
+```
+# HELP sct_auditing_ingestion_delay_seconds How far behind the SCT auditing service's ingestion point is for a CT log.
+# TYPE sct_auditing_ingestion_delay_seconds gauge
+sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXMXwMjFaXc=",log_name="Google Argon 2026h2",shard_ended="false"} 1616.906
+```
+
+| metric | meaning |
+| --- | --- |
+| `sct_auditing_ingestion_delay_seconds` | `now − ingestedUntil` for one log |
+| `sct_auditing_ingested_until_seconds` | the ingestion point itself, as Unix time |
+| `sct_auditing_logs_total` | logs in the last successful scrape |
+| `sct_auditing_scrape_success` | `1` / `0` for the most recent attempt |
+| `sct_auditing_scrape_timestamp_seconds` | when that attempt happened |
+
+The `shard_ended` label is the one to filter on — `shard_ended="true"` marks a log whose
+`temporal_interval` has passed, whose delay grows without bound by design. A useful alert
+is on the complement:
+
+```promql
+max by (log_name) (sct_auditing_ingestion_delay_seconds{shard_ended="false"}) > 86400
+```
+
+Samples deliberately carry no inline timestamps, so a scrape reflects when Prometheus read
+the file; `sct_auditing_scrape_timestamp_seconds` tells you how stale that read was.
+
+## The graph
+
+`index.html` plots delay per log over the retained window, served from GitHub Pages. It's a
+static page — uPlot from a pinned, SRI-checked CDN URL, no build step — that reads
+`logs.json` and `history.jsonl` from the same directory and fetches names from Cert Spotter
+at load time (that endpoint sends permissive CORS headers, so the browser can read it
+directly; if it's unreachable the page falls back to the names committed in `logs.json`).
+
+The y-axis is log-scaled because delays span seconds to months, and ended shards are hidden
+by default for the same reason. Clicking a legend row toggles one log, the filter box
+narrows by name, and hovering reads every visible series at that instant.
+
 ## Deriving the ages
 
 ```console
@@ -94,7 +157,8 @@ log's value moved recently before treating its age as a fault.
 ## Running it
 
 ```console
-$ ./scrape.sh          # writes data.json + meta.json
+$ ./scrape.sh          # fetch -> data.json + meta.json
+$ ./build.py           # -> metrics.txt, logs.json, history.jsonl
 ```
 
 Scheduled every 15 minutes by `.github/workflows/scrape.yml`, plus a `workflow_dispatch` trigger
@@ -119,3 +183,10 @@ Observed on the first scrape: of 74 logs, 49 had ingested within the last 24 hou
 delay ~36 min, p90 ~75 min, fastest ~3 min) and 25 were months stale. The 15-minute cadence
 is chosen to sit well below the active set's median so the sampling doesn't alias against
 the logs' own ingestion cycles.
+
+Every scrape rewrites `metrics.txt` and `history.jsonl` in full, but git's delta compression
+absorbs it: a simulated 192 commits packed to ~2.9 KiB each, or roughly 100 MB/year at this
+cadence, with synthetic data that changes every value every scrape (real data churns less).
+
+GitHub Pages is served from the `main` branch root, so each scrape commit republishes the
+graph; no separate deploy workflow is involved.

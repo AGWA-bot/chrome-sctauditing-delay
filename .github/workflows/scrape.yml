@@ -21,6 +21,9 @@ jobs:
       - name: Scrape
         run: ./scrape.sh
 
+      - name: Build metrics, history and log registry
+        run: ./build.py
+
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
