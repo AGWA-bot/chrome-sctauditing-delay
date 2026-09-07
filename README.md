@@ -97,7 +97,7 @@ log's value moved recently before treating its age as a fault.
 $ ./scrape.sh          # writes data.json + meta.json
 ```
 
-Scheduled half-hourly by `.github/workflows/scrape.yml`, plus a `workflow_dispatch` trigger
+Scheduled every 15 minutes by `.github/workflows/scrape.yml`, plus a `workflow_dispatch` trigger
 for manual runs. Two GitHub Actions caveats worth knowing:
 
 - `schedule` is best-effort. Runs are delayed under load and occasionally dropped entirely,
@@ -106,3 +106,8 @@ for manual runs. Two GitHub Actions caveats worth knowing:
 
 The API key in `scrape.sh` is the public Chromium key embedded in the browser's source, not
 a credential; it's committed deliberately so the scraper is self-contained.
+
+Observed on the first scrape: of 74 logs, 49 had ingested within the last 24 hours (median
+delay ~36 min, p90 ~75 min, fastest ~3 min) and 25 were months stale. The 15-minute cadence
+is chosen to sit well below the active set's median so the sampling doesn't alias against
+the logs' own ingestion cycles.
