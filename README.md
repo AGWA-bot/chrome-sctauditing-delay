@@ -102,7 +102,15 @@ for manual runs. Two GitHub Actions caveats worth knowing:
 
 - `schedule` is best-effort. Runs are delayed under load and occasionally dropped entirely,
   so treat the cadence as approximate — `scraped_at` is the truth, not the cron expression.
-- Scheduled workflows are disabled automatically after 60 days without repository activity.
+- Scheduled workflows in public repos are disabled after 60 days without repository
+  activity, and *workflow runs are not activity — commits are*. This repo is safe by
+  construction: `meta.json` embeds `scraped_at`, so every run commits and the 60-day clock
+  never advances. The common "commit only if the data changed" scraper is not safe; it
+  silently kills its own schedule during any quiet stretch over 60 days.
+  (`simonw/pge-outages` pushes only `github-actions[bot]` commits with the default
+  `GITHUB_TOKEN` and has stayed active for years, which confirms bot commits count;
+  `simonw/ca-fires-history` kept running but stopped committing in July 2024 and is now
+  `disabled_inactivity`.)
 
 The API key in `scrape.sh` is the public Chromium key embedded in the browser's source, not
 a credential; it's committed deliberately so the scraper is self-contained.
