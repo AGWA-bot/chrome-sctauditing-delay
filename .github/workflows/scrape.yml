@@ -34,3 +34,12 @@ jobs:
             git pull --rebase --autostash
           done
           exit 1
+
+      - name: Surface fetch failures
+        # scrape.sh exits 0 on a failed fetch so the ok:false heartbeat still gets
+        # committed; fail the job afterwards so a broken scraper doesn't show green.
+        run: |
+          jq -e '.ok' meta.json > /dev/null || {
+            echo "::error::fetch failed with HTTP $(jq -r .http meta.json)"
+            exit 1
+          }
