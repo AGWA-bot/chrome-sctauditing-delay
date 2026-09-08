@@ -47,6 +47,13 @@
   .val { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums;
          font-size: 12px; flex: none; }
   .inactive .nm { text-decoration: line-through; }
+  .item.focus { background: var(--panel); box-shadow: inset 2px 0 0 var(--accent); }
+  .tip { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 10;
+         background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+         padding: 6px 9px; font-size: 12px; line-height: 1.45; white-space: nowrap;
+         box-shadow: 0 2px 10px rgb(0 0 0 / 0.16); }
+  .tiphead { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+  .tipmeta { color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 1px; }
   footer { margin-top: 34px; padding-top: 14px; border-top: 1px solid var(--line);
            color: var(--muted); font-size: 13px; }
   footer a { color: var(--accent); }
@@ -197,6 +204,47 @@ async function main() {
 
     const axisInk = cssVar("--muted"), gridInk = cssVar("--line");
 
+    let focused = null, tip = null;
+
+    // Names the line under the cursor: a tooltip beside it, its legend row lit up.
+    const readout = (u) => {
+      const idx = u.cursor.idx;
+      series.forEach((log, k) => {
+        const row = el.legend.querySelector(`[data-i="${log.i}"]`);
+        if (!row) return;
+        const val = row.querySelector(".val");
+        if (val) val.textContent = idx == null ? fmtDur(log.latest) : fmtDur(u.data[k + 1][idx]);
+        row.classList.toggle("focus", focused === k + 1);
+      });
+
+      if (!tip) return;
+      const log = focused > 0 ? series[focused - 1] : null;
+      if (!log || idx == null) { tip.hidden = true; return; }
+
+      tip.textContent = "";
+      const head = document.createElement("div");
+      head.className = "tiphead";
+      const swatch = document.createElement("span");
+      swatch.className = "swatch";
+      swatch.style.background = log.color;
+      const name = document.createElement("span");
+      name.textContent = log.name;      // names come from a remote list; never innerHTML
+      head.append(swatch, name);
+      const meta = document.createElement("div");
+      meta.className = "tipmeta";
+      meta.textContent = fmtDur(u.data[focused][idx]) + " \u00b7 " +
+        new Date(u.data[0][idx] * 1000).toISOString().slice(0, 16).replace("T", " ") + "Z";
+      tip.append(head, meta);
+      tip.hidden = false;
+
+      // Flip to the other side of the cursor rather than spilling out of the plot.
+      const pad = 14;
+      let x = u.cursor.left + pad, y = u.cursor.top + pad;
+      if (x + tip.offsetWidth > u.over.clientWidth) x = u.cursor.left - tip.offsetWidth - pad;
+      if (y + tip.offsetHeight > u.over.clientHeight) y = u.cursor.top - tip.offsetHeight - pad;
+      tip.style.transform = `translate(${Math.max(0, x)}px, ${Math.max(0, y)}px)`;
+    };
+
     if (plot) { plot.destroy(); plot = null; }
     el.chart.innerHTML = "";
     if (series.length === 0) {
@@ -230,16 +278,20 @@ async function main() {
         })),
       ],
       hooks: {
-        setCursor: [u => {
-          const idx = u.cursor.idx;
-          for (const log of series) {
-            const node = el.legend.querySelector(`[data-i="${log.i}"] .val`);
-            if (node) node.textContent = idx == null ? fmtDur(log.latest)
-                                                     : fmtDur(u.data[series.indexOf(log) + 1][idx]);
-          }
+        // seriesIdx is the line nearest the cursor (see cursor.focus.prox), null on mouse-out.
+        setSeries: [(u, seriesIdx, opts) => {
+          if (!opts || opts.focus !== undefined) focused = seriesIdx;
+          readout(u);
         }],
+        setCursor: [u => readout(u)],
       },
     }, data, el.chart);
+
+    // Parented to the positioned overlay, so cursor.left/top are already its coordinates.
+    tip = document.createElement("div");
+    tip.className = "tip";
+    tip.hidden = true;
+    plot.over.appendChild(tip);
   }
 
   function renderLegend() {

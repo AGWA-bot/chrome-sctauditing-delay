@@ -81,9 +81,13 @@ def main():
         print(("PASS  " if ok else "FAIL  ") + msg)
 
     def shot(page, name):
-        if args.screenshots:
-            os.makedirs(args.screenshots, exist_ok=True)
-            page.screenshot(path=os.path.join(args.screenshots, name), full_page=True)
+        if not args.screenshots:
+            return
+        os.makedirs(args.screenshots, exist_ok=True)
+        page.screenshot(path=os.path.join(args.screenshots, name), full_page=True)
+        # A full-page shot resizes the viewport, which trips the page's own resize
+        # handler and rebuilds the plot. Let that debounce settle before querying again.
+        page.wait_for_timeout(400)
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
@@ -151,6 +155,40 @@ def main():
             hovered = page.eval_on_selector("#legend .val", "e => e.textContent")
             check(hovered not in ("", "—"), f"hover writes values into the legend ({hovered!r})")
             shot(page, "light-hover.png")
+
+            # --- hover readout: tooltip names the line, legend row lights up ---
+            box = page.locator("#chart canvas").bounding_box()
+            page.mouse.move(box["x"] + box["width"] * 0.5, box["y"] + box["height"] * 0.5)
+            page.wait_for_timeout(350)
+            check(page.is_visible(".tip"), "tooltip appears on hover")
+            tip_name = page.eval_on_selector(".tip .tiphead span:last-child", "e => e.textContent")
+            check(bool(tip_name), f"tooltip names a log ({tip_name!r})")
+            focus_rows = page.eval_on_selector_all("#legend .item.focus .nm", "e => e.map(x => x.textContent)")
+            check(len(focus_rows) == 1, f"exactly one legend row is focused ({len(focus_rows)})")
+            check(focus_rows[:1] == [tip_name], "the focused legend row is the log the tooltip names")
+            check(page.eval_on_selector(".tip .tipmeta", "e => e.textContent").count("\u00b7") == 1,
+                  "tooltip shows a delay and a timestamp")
+            shot(page, "light-tooltip.png")
+
+            # tooltip must flip rather than spill past the plot edges
+            for label, (fx, fy) in {"right": (0.99, 0.5), "bottom-right": (0.99, 0.98)}.items():
+                over = page.locator("#chart .u-over").bounding_box()
+                page.mouse.move(over["x"] + over["width"] * fx, over["y"] + over["height"] * fy)
+                page.wait_for_timeout(300)
+                if not page.is_visible(".tip"):
+                    continue
+                t, o = page.locator(".tip").bounding_box(), page.locator("#chart .u-over").bounding_box()
+                check(t["x"] + t["width"] <= o["x"] + o["width"] + 1 and
+                      t["y"] + t["height"] <= o["y"] + o["height"] + 1,
+                      f"tooltip stays inside the plot at the {label} edge")
+            shot(page, "light-tooltip-edge.png")
+
+            # leaving the plot clears both
+            page.mouse.move(box["x"] + box["width"] * 0.5, box["y"] - 60)
+            page.wait_for_timeout(350)
+            check(not page.is_visible(".tip"), "tooltip hides on mouse-out")
+            check(page.eval_on_selector_all("#legend .item.focus", "e => e.length") == 0,
+                  "legend focus clears on mouse-out")
 
             page.click("#legend .item")
             page.wait_for_timeout(300)
