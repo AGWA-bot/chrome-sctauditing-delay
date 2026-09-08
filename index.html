@@ -305,7 +305,7 @@ async function main() {
       const div = document.createElement("div");
       div.className = "item" + (shown.has(log.i) ? "" : " off") + (log.active ? "" : " inactive");
       div.dataset.i = log.i;
-      div.title = `${log.id}\nstate: ${log.state || "unknown"}`;
+      div.title = `${log.name}\n${log.id}\nstate: ${log.state || "unknown"}`;
       div.innerHTML =
         `<span class="swatch" style="background:${log.color}"></span>` +
         `<span class="nm"></span><span class="val"></span>`;
