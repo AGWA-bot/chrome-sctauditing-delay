@@ -1,90 +1,90 @@
 # HELP sct_auditing_ingestion_delay_seconds How far behind the SCT auditing service's ingestion point is for a CT log.
 # TYPE sct_auditing_ingestion_delay_seconds gauge
-sct_auditing_ingestion_delay_seconds{log_id="0W6ppWgHfmY1oD83pd28A6U8QRIU1IgY9ekxsyPLlQQ=",log_name="Sectigo Elephant 2026h1",state="rejected",active="false"} 6492444.632
-sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXMXwMjFaXc=",log_name="Google Argon 2026h2",state="usable",active="true"} 4600.918
-sct_auditing_ingestion_delay_seconds{log_id="1d5V7roItgyf/BjFE75qYLoARga8WVuWu0T2LMV9Ofo=",log_name="Geomys Tuscolo 2027h2",state="usable",active="true"} 968.008
-sct_auditing_ingestion_delay_seconds{log_id="1tWNqdAXU/NqSqDHV0kCr+vH3CzTjNn3ZMgMiRkenwI=",log_name="Google Argon 2027h1",state="usable",active="true"} 5899.165
-sct_auditing_ingestion_delay_seconds{log_id="2AlVO5RPev/IFhlvlE+Fq7D4/F6HVSYPFdEucrtFSxQ=",log_name="Google Xenon 2026h2",state="usable",active="true"} 6635.340
-sct_auditing_ingestion_delay_seconds{log_id="3dzKNJXX4RYF55Uy+sef+D0cUN/bADoUEnYKLKy7yCo=",log_name="Google Xenon 2025h2",state="absent",active="false"} 6064858.225
-sct_auditing_ingestion_delay_seconds{log_id="4yON8o2iiOCq4Kzw+pDJhfC2v/XSpSewAfwcRFjEtug=",log_name="Let's Encrypt Willow 2026h1",state="rejected",active="false"} 7321334.638
-sct_auditing_ingestion_delay_seconds{log_id="5NAXdhyRORG+9HOWrNjSRljCT7WTtRvqxVknYuiFPBU=",log_name="Let's Encrypt Willow 2025h2d",state="absent",active="false"} 10122476.267
-sct_auditing_ingestion_delay_seconds{log_id="5bvNwMctaSvZWYo2AgQ86FTsb2D4AGZ4WWOIK3w4JDg=",log_name="Cloudflare Raio 2026h1a",state="absent",active="false"} 5613479.913
-sct_auditing_ingestion_delay_seconds{log_id="5eNiR9ku9K2jhYO1NZHbcp/C8ArktnRRdNPd/GqiU4g=",log_name="Let's Encrypt Sycamore 2027h2",state="usable",active="true"} 3576.304
-sct_auditing_ingestion_delay_seconds{log_id="6+a9C+qJOkTtPzg+2/4QzZnxhphufXsmsBqEMk57934=",log_name="IPng Halloumi 2028h1",state="qualified",active="true"} 3987.475
-sct_auditing_ingestion_delay_seconds{log_id="7PBUNaSTKW0Kvz7J0JbyGycBLEcaHoPngTZnpglSvqY=",log_name="Google CoachAndHorses 2027h2",state="none",active="false"} 4569.321
-sct_auditing_ingestion_delay_seconds{log_id="7drrgVxjITRJtHvlB3kFq9DZMUfCesUUazvFjkPptsc=",log_name="TrustAsia HETU 2027",state="usable",active="true"} 2256.163
-sct_auditing_ingestion_delay_seconds{log_id="A18eYQnn44YBqbhkHlfl9aePeIcnUy/PQlPx68mqDzk=",log_name="Geomys Tuscolo 2028h2",state="qualified",active="true"} 967.913
-sct_auditing_ingestion_delay_seconds{log_id="A4AqwmL24F4D+Lxve5hRMk/Xaj31t1lRdeIi+46b1fY=",log_name="Sectigo Tiger 2027h2",state="usable",active="true"} 5127.955
-sct_auditing_ingestion_delay_seconds{log_id="ABpdGhwtk3W2SFV4+C9xoa5u7zl9KXyK4xV7yt7hoB4=",log_name="DigiCert Wyvern 2027h1",state="usable",active="true"} 1568.239
-sct_auditing_ingestion_delay_seconds{log_id="ALNWz93lJLRlXUxjZTxSUMQ04goEhRA5uv1kzlyFq2s=",log_name="IPng Halloumi 2028h2",state="qualified",active="true"} 3992.110
-sct_auditing_ingestion_delay_seconds{log_id="ANXCUqZpzf6O0sgXpi5M/O2SyHSR7pccmv3bUoh4hag=",log_name="IPng Gouda 2028h2",state="qualified",active="true"} 3967.704
-sct_auditing_ingestion_delay_seconds{log_id="CRV/Yy1Gx/dtlSZUk7wPALOVrF2zorJr+wQ9ukrGOJM=",log_name="IPng Halloumi 2027h2",state="usable",active="true"} 3980.683
-sct_auditing_ingestion_delay_seconds{log_id="DleUvPOuqT4zGyyZB7P3kN+bwj1xMiXdIaklrGHFTiE=",log_name="Google Argon 2026h1",state="rejected",active="false"} 3392304.956
-sct_auditing_ingestion_delay_seconds{log_id="EgXQJVrBiTyuVBBwPE8Sc/yXAOErWEp/gGrcVVWAwLE=",log_name="IPng Gouda 2028h1",state="qualified",active="true"} 7567.812
-sct_auditing_ingestion_delay_seconds{log_id="EvFONL1TckyEBhnDjz96E/jntWKHiJxtMAWE6+WGJjo=",log_name="Google Argon 2025h2",state="absent",active="false"} 6047717.946
-sct_auditing_ingestion_delay_seconds{log_id="F23RQr8KrLyBjUUTu9zDCtteWTJiU5KLmtfLdg/247k=",log_name="Geomys Trastevere 2027h1",state="qualified",active="true"} 967.854
-sct_auditing_ingestion_delay_seconds{log_id="FoMtq/CpJQ8P8DqlRf/Iv8gj0IdL9gQpJ/jnHzMT9fo=",log_name="Sectigo Tiger 2026h1",state="rejected",active="false"} 6492416.146
-sct_auditing_ingestion_delay_seconds{log_id="Gouda43XkdHNBUnttgNV1ga2T60w23H+eI8Px8j7xLE=",log_name="IPng Gouda 2027h1",state="usable",active="true"} 1567.889
-sct_auditing_ingestion_delay_seconds{log_id="GoudaUpXmMiZoMqIvfSPwLRWYMzDYA0fcfRp/8fRrKM=",log_name="IPng Gouda 2026h1",state="rejected",active="false"} 6111733.788
-sct_auditing_ingestion_delay_seconds{log_id="GoudaVNi2GSSp7niI2BuNOzp4xC6NPuTBXhdKc5XV+s=",log_name="IPng Gouda 2027h2",state="usable",active="true"} 3968.027
-sct_auditing_ingestion_delay_seconds{log_id="Goudaw/+v4G0eTnG0jEKhtbRAtTwRuIYLJ3jX14mJe8=",log_name="IPng Gouda 2026h2",state="usable",active="true"} 368.349
-sct_auditing_ingestion_delay_seconds{log_id="H7D4qS2K3aEhd2wF4qouFbrLxitlOTaVV2qqtS4R0R0=",log_name="DigiCert Sphinx 2027h2",state="usable",active="true"} 2227.070
-sct_auditing_ingestion_delay_seconds{log_id="HIl0B+YBCgEpO7Z439ejaM6xjMpSHcyk04bkoy5bXQQ=",log_name="Google ParcelYard 2027h1",state="usable",active="true"} 368.415
-sct_auditing_ingestion_delay_seconds{log_id="HJ9oLOn68EVpUPgbloqH3dsyENhM5siy44JSSsTPWZ8=",log_name="Sectigo Tiger 2027h1",state="usable",active="true"} 3373.601
-sct_auditing_ingestion_delay_seconds{log_id="HQJLjrFJizRN/YfqPvwJlvdQbyNdHUlwYaR3PEOcJfs=",log_name="Google Daedalus",state="none",active="false"} 2944287.026
-sct_auditing_ingestion_delay_seconds{log_id="IPBfqqOkkvxqwUjMM6ICNhhrSfqpfmuzkk+yXsNrHDU=",log_name="Google PlumbersArms 2026h2",state="usable",active="true"} 3969.742
-sct_auditing_ingestion_delay_seconds{log_id="Ia1IGvXLVPNLOr+uoP8Gmns8dm/DtpCHC7RrFS+2C/k=",log_name="Cloudflare Raio 2027h2a",state="absent",active="false"} 5613244.696
-sct_auditing_ingestion_delay_seconds{log_id="Ida8pGWG3oR5BIvzeNP2lqX0zFFs73zy2H/15xN0Ht0=",log_name="Google CoachAndHorses 2026h1",state="none",active="false"} 3390398.238
-sct_auditing_ingestion_delay_seconds{log_id="Jbfv3qETAZPtkweXcKoyKiZiDeNayKp8dRl94LGp4GU=",log_name="TrustAsia CT2026B",state="usable",active="true"} 1835.893
-sct_auditing_ingestion_delay_seconds{log_id="JuNkblhpISO8ND9HJDWbN5LNJFqI2BXTkzP9mRirRyM=",log_name="IPng Halloumi 2026h2a",state="usable",active="true"} 971.057
-sct_auditing_ingestion_delay_seconds{log_id="M3qex8rmqQSLdS8tk65+SyqQLSG0lxKdg+J5x1PJL4w=",log_name="Google PlumbersArms 2027h2",state="usable",active="true"} 435.770
-sct_auditing_ingestion_delay_seconds{log_id="N6oHzCFvLm2RnHCdJNj3MbAPKxR8YhzAkaX6GoTYFt0=",log_name="DigiCert Wyvern 2027h2",state="usable",active="true"} 2227.133
-sct_auditing_ingestion_delay_seconds{log_id="PeSSqJiTrXBeeEbtIdSNyvutE56mTtHjSfkAsKLNpeI=",log_name="Google Solera 2027h1",state="none",active="false"} 2913.078
-sct_auditing_ingestion_delay_seconds{log_id="RMK9DOkUDmSlyUoBkwpaobs1lw4A7hEWiWgqHETXtWY=",log_name="Google Xenon 2027h1",state="usable",active="true"} 5816.916
-sct_auditing_ingestion_delay_seconds{log_id="ROgi/CurDpLu0On61pZkYCd20Bdg4IkFCckjobA/w38=",log_name="IPng Halloumi 2027h1",state="usable",active="true"} 370.868
-sct_auditing_ingestion_delay_seconds{log_id="Rq+GPTs+5Z+ld96oJF02sNntIqIj9GF3QSKUUu6VUF8=",log_name="Geomys Tuscolo 2026h2",state="usable",active="true"} 667.251
-sct_auditing_ingestion_delay_seconds{log_id="RqI5Z8YNtkaHxm89+ZmUdpOmphEghFfVVefj0KHZtkY=",log_name="DigiCert Sphinx 2027h1",state="usable",active="true"} 1568.142
-sct_auditing_ingestion_delay_seconds{log_id="SZybad4dfOz8Nt7Nh2SmuFuvCoeAGdFVUvvp6ynd+MM=",log_name="DigiCert Sphinx 2026h1",state="rejected",active="false"} 6716534.072
-sct_auditing_ingestion_delay_seconds{log_id="TGPcmOWcHauI9h6KPd6uj6tEozd7X5uUw/uhnPzBviY=",log_name="Cloudflare Nimbus 2027",state="usable",active="true"} 3929.295
-sct_auditing_ingestion_delay_seconds{log_id="TefD7+U3ZpoMsB44OPqv3PCMmoBWM55wK1iVm9FxiS4=",log_name="Geomys Tuscolo 2028h1",state="qualified",active="true"} 968.072
-sct_auditing_ingestion_delay_seconds{log_id="Tw05u8NV28wWJ5ZuVAUVfMr3Lj90j0f+ewSeWlkVXL0=",log_name="Cloudflare Raio 2025h2b",state="absent",active="false"} 5613479.907
-sct_auditing_ingestion_delay_seconds{log_id="VzRIzG4dLA3JS2nyh9Hv5IPHolxQxTILuzrep29usEE=",log_name="TrustAsia Luoshu 2027",state="usable",active="true"} 1568.920
-sct_auditing_ingestion_delay_seconds{log_id="W/beU/H7+sSaGFl0aUWhpqconV5wpg9IRQ5Ya7mucrg=",log_name="Let's Encrypt Sycamore 2025h2d",state="absent",active="false"} 10122803.118
-sct_auditing_ingestion_delay_seconds{log_id="WW5sM4aUsllyolbIoOjdkEp26Ag92oc7AQg4KBQ87lk=",log_name="Geomys Tuscolo 2027h1",state="usable",active="true"} 368.168
-sct_auditing_ingestion_delay_seconds{log_id="X/nA+6QtrHjOZELrGazggaKb1OL7U68MYzB55QWCBMk=",log_name="Google PlumbersArms 2027h1",state="usable",active="true"} 368.877
-sct_auditing_ingestion_delay_seconds{log_id="Xk+hRjqD27R5prdS05bhyQxjDbDZ9sDelTzC7dZPUKM=",log_name="Google CoachAndHorses 2026h2",state="none",active="false"} 369.322
-sct_auditing_ingestion_delay_seconds{log_id="YEyar3p/d18B1Ab8kg3ImesLHH34yVIb+voXdzuXi8k=",log_name="Sectigo Elephant 2027h1",state="usable",active="true"} 3516.351
-sct_auditing_ingestion_delay_seconds{log_id="YukAYASjB5VadUS01YSpYmjKHW5Fha3wkW3+X9wfBNs=",log_name="Google Solera 2026h2",state="none",active="false"} 6423.493
-sct_auditing_ingestion_delay_seconds{log_id="ZBHEbKQS7KeJHKICLgC8q08oB9QeNSer6v7VA8l9zfA=",log_name="DigiCert Wyvern 2026h1",state="rejected",active="false"} 6716534.063
-sct_auditing_ingestion_delay_seconds{log_id="aYS3IzyydLLRRn2l4EDXH+upCiHniGU3Srn5vPhocjc=",log_name="Google ParcelYard 2027h2",state="usable",active="true"} 576.975
-sct_auditing_ingestion_delay_seconds{log_id="atJoPkfo0oBkkUI/1kQCGiJuzbhhm+1acN9ps2hPqi0=",log_name="Google CoachAndHorses 2027h1",state="none",active="false"} 373.161
-sct_auditing_ingestion_delay_seconds{log_id="bP5QGUOoXqkWvFLRM+TcyR7xQRx9JYQg0XOAnhgY6zo=",log_name="Let's Encrypt Sycamore 2026h2",state="usable",active="true"} 369.107
-sct_auditing_ingestion_delay_seconds{log_id="cX6V88I4im2x44RJPTHhWqliCHYtQgDgBQzQZ7WmYeI=",log_name="Geomys Tuscolo 2026h1",state="rejected",active="false"} 6111733.716
-sct_auditing_ingestion_delay_seconds{log_id="dNudWPfUfp39eHoWKpkcGM9pjafHKZGMmhiwRQ26RLw=",log_name="TrustAsia CT2026A",state="usable",active="true"} 1684.671
-sct_auditing_ingestion_delay_seconds{log_id="dZIIKK86Y1XymO0JfjR1dfm5hDwR4TkfV0QpnxyujO4=",log_name="Geomys Trastevere 2027h2",state="qualified",active="true"} 967.903
-sct_auditing_ingestion_delay_seconds{log_id="fz035/iSPY5xZb6w0+q+5yoivkbAy4TEFtTkuYJky8I=",log_name="IPng Halloumi 2026h1",state="rejected",active="false"} 5453499.896
-sct_auditing_ingestion_delay_seconds{log_id="ijgQv0CPWs97dN4gwHGQO3F5yrDb12jv+hD2KY6gaAw=",log_name="Cloudflare Raio 2027h1a",state="absent",active="false"} 5613011.984
-sct_auditing_ingestion_delay_seconds{log_id="j5ct6c9T2eqhZDHY6vWLWGZ8/QysT5c0VLGZaVHvlYc=",log_name="Geomys Trastevere 2028h1",state="qualified",active="true"} 968.198
-sct_auditing_ingestion_delay_seconds{log_id="jspHC6zeavOiBrCkeoS3Rv4fxr+VPiXmm07kAkjzxug=",log_name="Let's Encrypt Sycamore 2027h1",state="usable",active="true"} 968.851
-sct_auditing_ingestion_delay_seconds{log_id="lE5Dh/rswe+B8xkkJqgYZQHH0184AgE/cmd9VTcuGdg=",log_name="DigiCert Sphinx 2026h2",state="usable",active="true"} 1568.168
-sct_auditing_ingestion_delay_seconds{log_id="lpdkv1VYl633Q4doNwhCd+nwOtX2pPM2bkakPw/KqcY=",log_name="Google Xenon 2026h1",state="rejected",active="false"} 3441043.334
-sct_auditing_ingestion_delay_seconds{log_id="okkM3NuOM6QAMhdg1tTVGiA2GR6nfZaL4mqKAPb///c=",log_name="Sectigo Elephant 2027h2",state="usable",active="true"} 5153.811
-sct_auditing_ingestion_delay_seconds{log_id="ooEAGHNOF24dR+CVQPOBulRml81jqENQcW64CU7a8Q0=",log_name="Let's Encrypt Willow 2027h1",state="usable",active="true"} 969.059
-sct_auditing_ingestion_delay_seconds{log_id="pcl4kl1XRheChw3YiWYLXFVki30AQPLsB2hR0YhpGfc=",log_name="Let's Encrypt Sycamore 2026h1",state="rejected",active="false"} 7234933.870
-sct_auditing_ingestion_delay_seconds{log_id="ppWirZJtb5lujvxJAUJX2LvwRqfWJYm4jcLXh2x45S8=",log_name="Let's Encrypt Willow 2027h2",state="usable",active="true"} 3504.163
-sct_auditing_ingestion_delay_seconds{log_id="qCbL4wrGNRJGUz/gZfFPGdluGQgTxB3ZbXkAsxI8VSc=",log_name="Let's Encrypt Willow 2026h2",state="usable",active="true"} 368.268
-sct_auditing_ingestion_delay_seconds{log_id="r2eIO1ewTt2Pptl+9i6o64EKx3Fg8CReVdYML+eFhzo=",log_name="Sectigo Elephant 2026h2",state="usable",active="true"} 3533.774
-sct_auditing_ingestion_delay_seconds{log_id="sMyD5aX5fWuvfAnMKEkEhyrH6IsTLGNQt8b9JuFsbHc=",log_name="Google Test Tube",state="none",active="false"} 5815.981
-sct_auditing_ingestion_delay_seconds{log_id="utuIpG+cr6QJDoLlk1bbbni0pT9YLbCBl5UkLym2jJg=",log_name="Google ParcelYard 2026h2",state="usable",active="true"} 369.017
-sct_auditing_ingestion_delay_seconds{log_id="uuKpKTLFwF0fpU00gTDwm/yIMxZKFaH7vvUmKDJWyAs=",log_name="Cloudflare Raio 2026h2a",state="absent",active="false"} 5612880.000
-sct_auditing_ingestion_delay_seconds{log_id="w78Dp+HKiEHGB7rj/0Jw/KXsRbGG675OLPP8d4Yw9fY=",log_name="Google Crucible",state="none",active="false"} 5863.317
-sct_auditing_ingestion_delay_seconds{log_id="wjF+V0UZo0XufzjespBB68fCIVoiv3/Vta12mtkOUs0=",log_name="DigiCert Wyvern 2026h2",state="usable",active="true"} 1568.195
-sct_auditing_ingestion_delay_seconds{log_id="y6VZ4BSDyZ+U7N2er0ezmWM1bZ/1wShe6un50SqgTMc=",log_name="Geomys Trastevere 2028h2",state="qualified",active="true"} 967.651
-sct_auditing_ingestion_delay_seconds{log_id="yEuQege+qimmFMJFhLej9mJDlGh7Jf5ig4tx7EIq0vk=",log_name="Google Solera 2026h1",state="none",active="false"} 6799205.536
-sct_auditing_ingestion_delay_seconds{log_id="yKPEf8ezrbk1awE/anoSbeM6TkOlxkb5l605dZkdz5o=",log_name="Sectigo Tiger 2026h2",state="usable",active="true"} 3481.111
-sct_auditing_ingestion_delay_seconds{log_id="yMaDuhp5vKPNGyZsbZ6MzSf0hFEMerHyV59nUhBYOgM=",log_name="Geomys Trastevere 2026h2",state="qualified",active="true"} 576.348
-sct_auditing_ingestion_delay_seconds{log_id="yzj3FYl8hKFEX1vB3fvJbvKaWc1HCmkFhbDLFMMUWOc=",log_name="Cloudflare Nimbus 2026",state="usable",active="true"} 5079.027
-sct_auditing_ingestion_delay_seconds{log_id="zPsPaoVxCWX+lZtTzumyfCLphVwNl422qX5UwP5MDbA=",log_name="Cloudflare Nimbus 2025",state="absent",active="false"} 6054252.542
+sct_auditing_ingestion_delay_seconds{log_id="0W6ppWgHfmY1oD83pd28A6U8QRIU1IgY9ekxsyPLlQQ=",log_name="Sectigo Elephant 2026h1",state="rejected",active="false"} 6493259.996
+sct_auditing_ingestion_delay_seconds{log_id="1219ENGn9XfCx+lf1wC/+YLJM1pl4dCzAXMXwMjFaXc=",log_name="Google Argon 2026h2",state="usable",active="true"} 5416.282
+sct_auditing_ingestion_delay_seconds{log_id="1d5V7roItgyf/BjFE75qYLoARga8WVuWu0T2LMV9Ofo=",log_name="Geomys Tuscolo 2027h2",state="usable",active="true"} 1783.372
+sct_auditing_ingestion_delay_seconds{log_id="1tWNqdAXU/NqSqDHV0kCr+vH3CzTjNn3ZMgMiRkenwI=",log_name="Google Argon 2027h1",state="usable",active="true"} 6714.529
+sct_auditing_ingestion_delay_seconds{log_id="2AlVO5RPev/IFhlvlE+Fq7D4/F6HVSYPFdEucrtFSxQ=",log_name="Google Xenon 2026h2",state="usable",active="true"} 7450.704
+sct_auditing_ingestion_delay_seconds{log_id="3dzKNJXX4RYF55Uy+sef+D0cUN/bADoUEnYKLKy7yCo=",log_name="Google Xenon 2025h2",state="absent",active="false"} 6065673.589
+sct_auditing_ingestion_delay_seconds{log_id="4yON8o2iiOCq4Kzw+pDJhfC2v/XSpSewAfwcRFjEtug=",log_name="Let's Encrypt Willow 2026h1",state="rejected",active="false"} 7322150.002
+sct_auditing_ingestion_delay_seconds{log_id="5NAXdhyRORG+9HOWrNjSRljCT7WTtRvqxVknYuiFPBU=",log_name="Let's Encrypt Willow 2025h2d",state="absent",active="false"} 10123291.631
+sct_auditing_ingestion_delay_seconds{log_id="5bvNwMctaSvZWYo2AgQ86FTsb2D4AGZ4WWOIK3w4JDg=",log_name="Cloudflare Raio 2026h1a",state="absent",active="false"} 5614295.277
+sct_auditing_ingestion_delay_seconds{log_id="5eNiR9ku9K2jhYO1NZHbcp/C8ArktnRRdNPd/GqiU4g=",log_name="Let's Encrypt Sycamore 2027h2",state="usable",active="true"} 583.669
+sct_auditing_ingestion_delay_seconds{log_id="6+a9C+qJOkTtPzg+2/4QzZnxhphufXsmsBqEMk57934=",log_name="IPng Halloumi 2028h1",state="qualified",active="true"} 737.838
+sct_auditing_ingestion_delay_seconds{log_id="7PBUNaSTKW0Kvz7J0JbyGycBLEcaHoPngTZnpglSvqY=",log_name="Google CoachAndHorses 2027h2",state="none",active="false"} 5384.685
+sct_auditing_ingestion_delay_seconds{log_id="7drrgVxjITRJtHvlB3kFq9DZMUfCesUUazvFjkPptsc=",log_name="TrustAsia HETU 2027",state="usable",active="true"} 1856.429
+sct_auditing_ingestion_delay_seconds{log_id="A18eYQnn44YBqbhkHlfl9aePeIcnUy/PQlPx68mqDzk=",log_name="Geomys Tuscolo 2028h2",state="qualified",active="true"} 1783.277
+sct_auditing_ingestion_delay_seconds{log_id="A4AqwmL24F4D+Lxve5hRMk/Xaj31t1lRdeIi+46b1fY=",log_name="Sectigo Tiger 2027h2",state="usable",active="true"} 3186.883
+sct_auditing_ingestion_delay_seconds{log_id="ABpdGhwtk3W2SFV4+C9xoa5u7zl9KXyK4xV7yt7hoB4=",log_name="DigiCert Wyvern 2027h1",state="usable",active="true"} 2383.603
+sct_auditing_ingestion_delay_seconds{log_id="ALNWz93lJLRlXUxjZTxSUMQ04goEhRA5uv1kzlyFq2s=",log_name="IPng Halloumi 2028h2",state="qualified",active="true"} 4807.474
+sct_auditing_ingestion_delay_seconds{log_id="ANXCUqZpzf6O0sgXpi5M/O2SyHSR7pccmv3bUoh4hag=",log_name="IPng Gouda 2028h2",state="qualified",active="true"} 792.069
+sct_auditing_ingestion_delay_seconds{log_id="CRV/Yy1Gx/dtlSZUk7wPALOVrF2zorJr+wQ9ukrGOJM=",log_name="IPng Halloumi 2027h2",state="usable",active="true"} 744.546
+sct_auditing_ingestion_delay_seconds{log_id="DleUvPOuqT4zGyyZB7P3kN+bwj1xMiXdIaklrGHFTiE=",log_name="Google Argon 2026h1",state="rejected",active="false"} 3393120.320
+sct_auditing_ingestion_delay_seconds{log_id="EgXQJVrBiTyuVBBwPE8Sc/yXAOErWEp/gGrcVVWAwLE=",log_name="IPng Gouda 2028h1",state="qualified",active="true"} 792.176
+sct_auditing_ingestion_delay_seconds{log_id="EvFONL1TckyEBhnDjz96E/jntWKHiJxtMAWE6+WGJjo=",log_name="Google Argon 2025h2",state="absent",active="false"} 6048533.310
+sct_auditing_ingestion_delay_seconds{log_id="F23RQr8KrLyBjUUTu9zDCtteWTJiU5KLmtfLdg/247k=",log_name="Geomys Trastevere 2027h1",state="qualified",active="true"} 1783.218
+sct_auditing_ingestion_delay_seconds{log_id="FoMtq/CpJQ8P8DqlRf/Iv8gj0IdL9gQpJ/jnHzMT9fo=",log_name="Sectigo Tiger 2026h1",state="rejected",active="false"} 6493231.510
+sct_auditing_ingestion_delay_seconds{log_id="Gouda43XkdHNBUnttgNV1ga2T60w23H+eI8Px8j7xLE=",log_name="IPng Gouda 2027h1",state="usable",active="true"} 119.253
+sct_auditing_ingestion_delay_seconds{log_id="GoudaUpXmMiZoMqIvfSPwLRWYMzDYA0fcfRp/8fRrKM=",log_name="IPng Gouda 2026h1",state="rejected",active="false"} 6112549.152
+sct_auditing_ingestion_delay_seconds{log_id="GoudaVNi2GSSp7niI2BuNOzp4xC6NPuTBXhdKc5XV+s=",log_name="IPng Gouda 2027h2",state="usable",active="true"} 791.391
+sct_auditing_ingestion_delay_seconds{log_id="Goudaw/+v4G0eTnG0jEKhtbRAtTwRuIYLJ3jX14mJe8=",log_name="IPng Gouda 2026h2",state="usable",active="true"} 603.248
+sct_auditing_ingestion_delay_seconds{log_id="H7D4qS2K3aEhd2wF4qouFbrLxitlOTaVV2qqtS4R0R0=",log_name="DigiCert Sphinx 2027h2",state="usable",active="true"} 3042.434
+sct_auditing_ingestion_delay_seconds{log_id="HIl0B+YBCgEpO7Z439ejaM6xjMpSHcyk04bkoy5bXQQ=",log_name="Google ParcelYard 2027h1",state="usable",active="true"} 1183.779
+sct_auditing_ingestion_delay_seconds{log_id="HJ9oLOn68EVpUPgbloqH3dsyENhM5siy44JSSsTPWZ8=",log_name="Sectigo Tiger 2027h1",state="usable",active="true"} 309.036
+sct_auditing_ingestion_delay_seconds{log_id="HQJLjrFJizRN/YfqPvwJlvdQbyNdHUlwYaR3PEOcJfs=",log_name="Google Daedalus",state="none",active="false"} 2945102.390
+sct_auditing_ingestion_delay_seconds{log_id="IPBfqqOkkvxqwUjMM6ICNhhrSfqpfmuzkk+yXsNrHDU=",log_name="Google PlumbersArms 2026h2",state="usable",active="true"} 1184.024
+sct_auditing_ingestion_delay_seconds{log_id="Ia1IGvXLVPNLOr+uoP8Gmns8dm/DtpCHC7RrFS+2C/k=",log_name="Cloudflare Raio 2027h2a",state="absent",active="false"} 5614060.060
+sct_auditing_ingestion_delay_seconds{log_id="Ida8pGWG3oR5BIvzeNP2lqX0zFFs73zy2H/15xN0Ht0=",log_name="Google CoachAndHorses 2026h1",state="none",active="false"} 3391213.602
+sct_auditing_ingestion_delay_seconds{log_id="Jbfv3qETAZPtkweXcKoyKiZiDeNayKp8dRl94LGp4GU=",log_name="TrustAsia CT2026B",state="usable",active="true"} 2651.257
+sct_auditing_ingestion_delay_seconds{log_id="JuNkblhpISO8ND9HJDWbN5LNJFqI2BXTkzP9mRirRyM=",log_name="IPng Halloumi 2026h2a",state="usable",active="true"} 795.385
+sct_auditing_ingestion_delay_seconds{log_id="M3qex8rmqQSLdS8tk65+SyqQLSG0lxKdg+J5x1PJL4w=",log_name="Google PlumbersArms 2027h2",state="usable",active="true"} 1251.134
+sct_auditing_ingestion_delay_seconds{log_id="N6oHzCFvLm2RnHCdJNj3MbAPKxR8YhzAkaX6GoTYFt0=",log_name="DigiCert Wyvern 2027h2",state="usable",active="true"} 3042.497
+sct_auditing_ingestion_delay_seconds{log_id="PeSSqJiTrXBeeEbtIdSNyvutE56mTtHjSfkAsKLNpeI=",log_name="Google Solera 2027h1",state="none",active="false"} 3728.442
+sct_auditing_ingestion_delay_seconds{log_id="RMK9DOkUDmSlyUoBkwpaobs1lw4A7hEWiWgqHETXtWY=",log_name="Google Xenon 2027h1",state="usable",active="true"} 6632.280
+sct_auditing_ingestion_delay_seconds{log_id="ROgi/CurDpLu0On61pZkYCd20Bdg4IkFCckjobA/w38=",log_name="IPng Halloumi 2027h1",state="usable",active="true"} 285.453
+sct_auditing_ingestion_delay_seconds{log_id="Rq+GPTs+5Z+ld96oJF02sNntIqIj9GF3QSKUUu6VUF8=",log_name="Geomys Tuscolo 2026h2",state="usable",active="true"} 791.615
+sct_auditing_ingestion_delay_seconds{log_id="RqI5Z8YNtkaHxm89+ZmUdpOmphEghFfVVefj0KHZtkY=",log_name="DigiCert Sphinx 2027h1",state="usable",active="true"} 2383.506
+sct_auditing_ingestion_delay_seconds{log_id="SZybad4dfOz8Nt7Nh2SmuFuvCoeAGdFVUvvp6ynd+MM=",log_name="DigiCert Sphinx 2026h1",state="rejected",active="false"} 6717349.436
+sct_auditing_ingestion_delay_seconds{log_id="TGPcmOWcHauI9h6KPd6uj6tEozd7X5uUw/uhnPzBviY=",log_name="Cloudflare Nimbus 2027",state="usable",active="true"} 4744.659
+sct_auditing_ingestion_delay_seconds{log_id="TefD7+U3ZpoMsB44OPqv3PCMmoBWM55wK1iVm9FxiS4=",log_name="Geomys Tuscolo 2028h1",state="qualified",active="true"} 1783.436
+sct_auditing_ingestion_delay_seconds{log_id="Tw05u8NV28wWJ5ZuVAUVfMr3Lj90j0f+ewSeWlkVXL0=",log_name="Cloudflare Raio 2025h2b",state="absent",active="false"} 5614295.271
+sct_auditing_ingestion_delay_seconds{log_id="VzRIzG4dLA3JS2nyh9Hv5IPHolxQxTILuzrep29usEE=",log_name="TrustAsia Luoshu 2027",state="usable",active="true"} 2384.284
+sct_auditing_ingestion_delay_seconds{log_id="W/beU/H7+sSaGFl0aUWhpqconV5wpg9IRQ5Ya7mucrg=",log_name="Let's Encrypt Sycamore 2025h2d",state="absent",active="false"} 10123618.482
+sct_auditing_ingestion_delay_seconds{log_id="WW5sM4aUsllyolbIoOjdkEp26Ag92oc7AQg4KBQ87lk=",log_name="Geomys Tuscolo 2027h1",state="usable",active="true"} 282.532
+sct_auditing_ingestion_delay_seconds{log_id="X/nA+6QtrHjOZELrGazggaKb1OL7U68MYzB55QWCBMk=",log_name="Google PlumbersArms 2027h1",state="usable",active="true"} 1184.241
+sct_auditing_ingestion_delay_seconds{log_id="Xk+hRjqD27R5prdS05bhyQxjDbDZ9sDelTzC7dZPUKM=",log_name="Google CoachAndHorses 2026h2",state="none",active="false"} 584.627
+sct_auditing_ingestion_delay_seconds{log_id="YEyar3p/d18B1Ab8kg3ImesLHH34yVIb+voXdzuXi8k=",log_name="Sectigo Elephant 2027h1",state="usable",active="true"} 221.710
+sct_auditing_ingestion_delay_seconds{log_id="YukAYASjB5VadUS01YSpYmjKHW5Fha3wkW3+X9wfBNs=",log_name="Google Solera 2026h2",state="none",active="false"} 7238.857
+sct_auditing_ingestion_delay_seconds{log_id="ZBHEbKQS7KeJHKICLgC8q08oB9QeNSer6v7VA8l9zfA=",log_name="DigiCert Wyvern 2026h1",state="rejected",active="false"} 6717349.427
+sct_auditing_ingestion_delay_seconds{log_id="aYS3IzyydLLRRn2l4EDXH+upCiHniGU3Srn5vPhocjc=",log_name="Google ParcelYard 2027h2",state="usable",active="true"} 1392.339
+sct_auditing_ingestion_delay_seconds{log_id="atJoPkfo0oBkkUI/1kQCGiJuzbhhm+1acN9ps2hPqi0=",log_name="Google CoachAndHorses 2027h1",state="none",active="false"} 1188.525
+sct_auditing_ingestion_delay_seconds{log_id="bP5QGUOoXqkWvFLRM+TcyR7xQRx9JYQg0XOAnhgY6zo=",log_name="Let's Encrypt Sycamore 2026h2",state="usable",active="true"} 584.471
+sct_auditing_ingestion_delay_seconds{log_id="cX6V88I4im2x44RJPTHhWqliCHYtQgDgBQzQZ7WmYeI=",log_name="Geomys Tuscolo 2026h1",state="rejected",active="false"} 6112549.080
+sct_auditing_ingestion_delay_seconds{log_id="dNudWPfUfp39eHoWKpkcGM9pjafHKZGMmhiwRQ26RLw=",log_name="TrustAsia CT2026A",state="usable",active="true"} 1529.001
+sct_auditing_ingestion_delay_seconds{log_id="dZIIKK86Y1XymO0JfjR1dfm5hDwR4TkfV0QpnxyujO4=",log_name="Geomys Trastevere 2027h2",state="qualified",active="true"} 1783.267
+sct_auditing_ingestion_delay_seconds{log_id="fz035/iSPY5xZb6w0+q+5yoivkbAy4TEFtTkuYJky8I=",log_name="IPng Halloumi 2026h1",state="rejected",active="false"} 5454315.260
+sct_auditing_ingestion_delay_seconds{log_id="ijgQv0CPWs97dN4gwHGQO3F5yrDb12jv+hD2KY6gaAw=",log_name="Cloudflare Raio 2027h1a",state="absent",active="false"} 5613827.348
+sct_auditing_ingestion_delay_seconds{log_id="j5ct6c9T2eqhZDHY6vWLWGZ8/QysT5c0VLGZaVHvlYc=",log_name="Geomys Trastevere 2028h1",state="qualified",active="true"} 1783.562
+sct_auditing_ingestion_delay_seconds{log_id="jspHC6zeavOiBrCkeoS3Rv4fxr+VPiXmm07kAkjzxug=",log_name="Let's Encrypt Sycamore 2027h1",state="usable",active="true"} 584.216
+sct_auditing_ingestion_delay_seconds{log_id="lE5Dh/rswe+B8xkkJqgYZQHH0184AgE/cmd9VTcuGdg=",log_name="DigiCert Sphinx 2026h2",state="usable",active="true"} 2383.532
+sct_auditing_ingestion_delay_seconds{log_id="lpdkv1VYl633Q4doNwhCd+nwOtX2pPM2bkakPw/KqcY=",log_name="Google Xenon 2026h1",state="rejected",active="false"} 3441858.698
+sct_auditing_ingestion_delay_seconds{log_id="okkM3NuOM6QAMhdg1tTVGiA2GR6nfZaL4mqKAPb///c=",log_name="Sectigo Elephant 2027h2",state="usable",active="true"} 5969.175
+sct_auditing_ingestion_delay_seconds{log_id="ooEAGHNOF24dR+CVQPOBulRml81jqENQcW64CU7a8Q0=",log_name="Let's Encrypt Willow 2027h1",state="usable",active="true"} 584.423
+sct_auditing_ingestion_delay_seconds{log_id="pcl4kl1XRheChw3YiWYLXFVki30AQPLsB2hR0YhpGfc=",log_name="Let's Encrypt Sycamore 2026h1",state="rejected",active="false"} 7235749.234
+sct_auditing_ingestion_delay_seconds{log_id="ppWirZJtb5lujvxJAUJX2LvwRqfWJYm4jcLXh2x45S8=",log_name="Let's Encrypt Willow 2027h2",state="usable",active="true"} 583.527
+sct_auditing_ingestion_delay_seconds{log_id="qCbL4wrGNRJGUz/gZfFPGdluGQgTxB3ZbXkAsxI8VSc=",log_name="Let's Encrypt Willow 2026h2",state="usable",active="true"} 583.633
+sct_auditing_ingestion_delay_seconds{log_id="r2eIO1ewTt2Pptl+9i6o64EKx3Fg8CReVdYML+eFhzo=",log_name="Sectigo Elephant 2026h2",state="usable",active="true"} 212.101
+sct_auditing_ingestion_delay_seconds{log_id="sMyD5aX5fWuvfAnMKEkEhyrH6IsTLGNQt8b9JuFsbHc=",log_name="Google Test Tube",state="none",active="false"} 6631.345
+sct_auditing_ingestion_delay_seconds{log_id="utuIpG+cr6QJDoLlk1bbbni0pT9YLbCBl5UkLym2jJg=",log_name="Google ParcelYard 2026h2",state="usable",active="true"} 584.025
+sct_auditing_ingestion_delay_seconds{log_id="uuKpKTLFwF0fpU00gTDwm/yIMxZKFaH7vvUmKDJWyAs=",log_name="Cloudflare Raio 2026h2a",state="absent",active="false"} 5613695.364
+sct_auditing_ingestion_delay_seconds{log_id="w78Dp+HKiEHGB7rj/0Jw/KXsRbGG675OLPP8d4Yw9fY=",log_name="Google Crucible",state="none",active="false"} 6678.681
+sct_auditing_ingestion_delay_seconds{log_id="wjF+V0UZo0XufzjespBB68fCIVoiv3/Vta12mtkOUs0=",log_name="DigiCert Wyvern 2026h2",state="usable",active="true"} 2383.559
+sct_auditing_ingestion_delay_seconds{log_id="y6VZ4BSDyZ+U7N2er0ezmWM1bZ/1wShe6un50SqgTMc=",log_name="Geomys Trastevere 2028h2",state="qualified",active="true"} 1783.015
+sct_auditing_ingestion_delay_seconds{log_id="yEuQege+qimmFMJFhLej9mJDlGh7Jf5ig4tx7EIq0vk=",log_name="Google Solera 2026h1",state="none",active="false"} 6800020.900
+sct_auditing_ingestion_delay_seconds{log_id="yKPEf8ezrbk1awE/anoSbeM6TkOlxkb5l605dZkdz5o=",log_name="Sectigo Tiger 2026h2",state="usable",active="true"} 4296.475
+sct_auditing_ingestion_delay_seconds{log_id="yMaDuhp5vKPNGyZsbZ6MzSf0hFEMerHyV59nUhBYOgM=",log_name="Geomys Trastevere 2026h2",state="qualified",active="true"} 583.712
+sct_auditing_ingestion_delay_seconds{log_id="yzj3FYl8hKFEX1vB3fvJbvKaWc1HCmkFhbDLFMMUWOc=",log_name="Cloudflare Nimbus 2026",state="usable",active="true"} 5894.391
+sct_auditing_ingestion_delay_seconds{log_id="zPsPaoVxCWX+lZtTzumyfCLphVwNl422qX5UwP5MDbA=",log_name="Cloudflare Nimbus 2025",state="absent",active="false"} 6055067.906
 # HELP sct_auditing_ingested_until_seconds Unix time of the point up to which a CT log has been ingested.
 # TYPE sct_auditing_ingested_until_seconds gauge
 sct_auditing_ingested_until_seconds{log_id="0W6ppWgHfmY1oD83pd28A6U8QRIU1IgY9ekxsyPLlQQ=",log_name="Sectigo Elephant 2026h1",state="rejected",active="false"} 1783088089.081
@@ -96,40 +96,40 @@ sct_auditing_ingested_until_seconds{log_id="3dzKNJXX4RYF55Uy+sef+D0cUN/bADoUEnYK
 sct_auditing_ingested_until_seconds{log_id="4yON8o2iiOCq4Kzw+pDJhfC2v/XSpSewAfwcRFjEtug=",log_name="Let's Encrypt Willow 2026h1",state="rejected",active="false"} 1782259199.075
 sct_auditing_ingested_until_seconds{log_id="5NAXdhyRORG+9HOWrNjSRljCT7WTtRvqxVknYuiFPBU=",log_name="Let's Encrypt Willow 2025h2d",state="absent",active="false"} 1779458057.446
 sct_auditing_ingested_until_seconds{log_id="5bvNwMctaSvZWYo2AgQ86FTsb2D4AGZ4WWOIK3w4JDg=",log_name="Cloudflare Raio 2026h1a",state="absent",active="false"} 1783967053.800
-sct_auditing_ingested_until_seconds{log_id="5eNiR9ku9K2jhYO1NZHbcp/C8ArktnRRdNPd/GqiU4g=",log_name="Let's Encrypt Sycamore 2027h2",state="usable",active="true"} 1789576957.409
-sct_auditing_ingested_until_seconds{log_id="6+a9C+qJOkTtPzg+2/4QzZnxhphufXsmsBqEMk57934=",log_name="IPng Halloumi 2028h1",state="qualified",active="true"} 1789576546.238
+sct_auditing_ingested_until_seconds{log_id="5eNiR9ku9K2jhYO1NZHbcp/C8ArktnRRdNPd/GqiU4g=",log_name="Let's Encrypt Sycamore 2027h2",state="usable",active="true"} 1789580765.408
+sct_auditing_ingested_until_seconds{log_id="6+a9C+qJOkTtPzg+2/4QzZnxhphufXsmsBqEMk57934=",log_name="IPng Halloumi 2028h1",state="qualified",active="true"} 1789580611.239
 sct_auditing_ingested_until_seconds{log_id="7PBUNaSTKW0Kvz7J0JbyGycBLEcaHoPngTZnpglSvqY=",log_name="Google CoachAndHorses 2027h2",state="none",active="false"} 1789575964.392
-sct_auditing_ingested_until_seconds{log_id="7drrgVxjITRJtHvlB3kFq9DZMUfCesUUazvFjkPptsc=",log_name="TrustAsia HETU 2027",state="usable",active="true"} 1789578277.550
+sct_auditing_ingested_until_seconds{log_id="7drrgVxjITRJtHvlB3kFq9DZMUfCesUUazvFjkPptsc=",log_name="TrustAsia HETU 2027",state="usable",active="true"} 1789579492.648
 sct_auditing_ingested_until_seconds{log_id="A18eYQnn44YBqbhkHlfl9aePeIcnUy/PQlPx68mqDzk=",log_name="Geomys Tuscolo 2028h2",state="qualified",active="true"} 1789579565.800
-sct_auditing_ingested_until_seconds{log_id="A4AqwmL24F4D+Lxve5hRMk/Xaj31t1lRdeIi+46b1fY=",log_name="Sectigo Tiger 2027h2",state="usable",active="true"} 1789575405.758
+sct_auditing_ingested_until_seconds{log_id="A4AqwmL24F4D+Lxve5hRMk/Xaj31t1lRdeIi+46b1fY=",log_name="Sectigo Tiger 2027h2",state="usable",active="true"} 1789578162.194
 sct_auditing_ingested_until_seconds{log_id="ABpdGhwtk3W2SFV4+C9xoa5u7zl9KXyK4xV7yt7hoB4=",log_name="DigiCert Wyvern 2027h1",state="usable",active="true"} 1789578965.474
 sct_auditing_ingested_until_seconds{log_id="ALNWz93lJLRlXUxjZTxSUMQ04goEhRA5uv1kzlyFq2s=",log_name="IPng Halloumi 2028h2",state="qualified",active="true"} 1789576541.603
-sct_auditing_ingested_until_seconds{log_id="ANXCUqZpzf6O0sgXpi5M/O2SyHSR7pccmv3bUoh4hag=",log_name="IPng Gouda 2028h2",state="qualified",active="true"} 1789576566.009
-sct_auditing_ingested_until_seconds{log_id="CRV/Yy1Gx/dtlSZUk7wPALOVrF2zorJr+wQ9ukrGOJM=",log_name="IPng Halloumi 2027h2",state="usable",active="true"} 1789576553.030
+sct_auditing_ingested_until_seconds{log_id="ANXCUqZpzf6O0sgXpi5M/O2SyHSR7pccmv3bUoh4hag=",log_name="IPng Gouda 2028h2",state="qualified",active="true"} 1789580557.008
+sct_auditing_ingested_until_seconds{log_id="CRV/Yy1Gx/dtlSZUk7wPALOVrF2zorJr+wQ9ukrGOJM=",log_name="IPng Halloumi 2027h2",state="usable",active="true"} 1789580604.531
 sct_auditing_ingested_until_seconds{log_id="DleUvPOuqT4zGyyZB7P3kN+bwj1xMiXdIaklrGHFTiE=",log_name="Google Argon 2026h1",state="rejected",active="false"} 1786188228.757
-sct_auditing_ingested_until_seconds{log_id="EgXQJVrBiTyuVBBwPE8Sc/yXAOErWEp/gGrcVVWAwLE=",log_name="IPng Gouda 2028h1",state="qualified",active="true"} 1789572965.901
+sct_auditing_ingested_until_seconds{log_id="EgXQJVrBiTyuVBBwPE8Sc/yXAOErWEp/gGrcVVWAwLE=",log_name="IPng Gouda 2028h1",state="qualified",active="true"} 1789580556.901
 sct_auditing_ingested_until_seconds{log_id="EvFONL1TckyEBhnDjz96E/jntWKHiJxtMAWE6+WGJjo=",log_name="Google Argon 2025h2",state="absent",active="false"} 1783532815.767
 sct_auditing_ingested_until_seconds{log_id="F23RQr8KrLyBjUUTu9zDCtteWTJiU5KLmtfLdg/247k=",log_name="Geomys Trastevere 2027h1",state="qualified",active="true"} 1789579565.859
 sct_auditing_ingested_until_seconds{log_id="FoMtq/CpJQ8P8DqlRf/Iv8gj0IdL9gQpJ/jnHzMT9fo=",log_name="Sectigo Tiger 2026h1",state="rejected",active="false"} 1783088117.567
-sct_auditing_ingested_until_seconds{log_id="Gouda43XkdHNBUnttgNV1ga2T60w23H+eI8Px8j7xLE=",log_name="IPng Gouda 2027h1",state="usable",active="true"} 1789578965.824
+sct_auditing_ingested_until_seconds{log_id="Gouda43XkdHNBUnttgNV1ga2T60w23H+eI8Px8j7xLE=",log_name="IPng Gouda 2027h1",state="usable",active="true"} 1789581229.824
 sct_auditing_ingested_until_seconds{log_id="GoudaUpXmMiZoMqIvfSPwLRWYMzDYA0fcfRp/8fRrKM=",log_name="IPng Gouda 2026h1",state="rejected",active="false"} 1783468799.925
-sct_auditing_ingested_until_seconds{log_id="GoudaVNi2GSSp7niI2BuNOzp4xC6NPuTBXhdKc5XV+s=",log_name="IPng Gouda 2027h2",state="usable",active="true"} 1789576565.686
-sct_auditing_ingested_until_seconds{log_id="Goudaw/+v4G0eTnG0jEKhtbRAtTwRuIYLJ3jX14mJe8=",log_name="IPng Gouda 2026h2",state="usable",active="true"} 1789580165.364
+sct_auditing_ingested_until_seconds{log_id="GoudaVNi2GSSp7niI2BuNOzp4xC6NPuTBXhdKc5XV+s=",log_name="IPng Gouda 2027h2",state="usable",active="true"} 1789580557.686
+sct_auditing_ingested_until_seconds{log_id="Goudaw/+v4G0eTnG0jEKhtbRAtTwRuIYLJ3jX14mJe8=",log_name="IPng Gouda 2026h2",state="usable",active="true"} 1789580745.829
 sct_auditing_ingested_until_seconds{log_id="H7D4qS2K3aEhd2wF4qouFbrLxitlOTaVV2qqtS4R0R0=",log_name="DigiCert Sphinx 2027h2",state="usable",active="true"} 1789578306.643
 sct_auditing_ingested_until_seconds{log_id="HIl0B+YBCgEpO7Z439ejaM6xjMpSHcyk04bkoy5bXQQ=",log_name="Google ParcelYard 2027h1",state="usable",active="true"} 1789580165.298
-sct_auditing_ingested_until_seconds{log_id="HJ9oLOn68EVpUPgbloqH3dsyENhM5siy44JSSsTPWZ8=",log_name="Sectigo Tiger 2027h1",state="usable",active="true"} 1789577160.112
+sct_auditing_ingested_until_seconds{log_id="HJ9oLOn68EVpUPgbloqH3dsyENhM5siy44JSSsTPWZ8=",log_name="Sectigo Tiger 2027h1",state="usable",active="true"} 1789581040.041
 sct_auditing_ingested_until_seconds{log_id="HQJLjrFJizRN/YfqPvwJlvdQbyNdHUlwYaR3PEOcJfs=",log_name="Google Daedalus",state="none",active="false"} 1786636246.687
-sct_auditing_ingested_until_seconds{log_id="IPBfqqOkkvxqwUjMM6ICNhhrSfqpfmuzkk+yXsNrHDU=",log_name="Google PlumbersArms 2026h2",state="usable",active="true"} 1789576563.971
+sct_auditing_ingested_until_seconds{log_id="IPBfqqOkkvxqwUjMM6ICNhhrSfqpfmuzkk+yXsNrHDU=",log_name="Google PlumbersArms 2026h2",state="usable",active="true"} 1789580165.053
 sct_auditing_ingested_until_seconds{log_id="Ia1IGvXLVPNLOr+uoP8Gmns8dm/DtpCHC7RrFS+2C/k=",log_name="Cloudflare Raio 2027h2a",state="absent",active="false"} 1783967289.017
 sct_auditing_ingested_until_seconds{log_id="Ida8pGWG3oR5BIvzeNP2lqX0zFFs73zy2H/15xN0Ht0=",log_name="Google CoachAndHorses 2026h1",state="none",active="false"} 1786190135.475
 sct_auditing_ingested_until_seconds{log_id="Jbfv3qETAZPtkweXcKoyKiZiDeNayKp8dRl94LGp4GU=",log_name="TrustAsia CT2026B",state="usable",active="true"} 1789578697.820
-sct_auditing_ingested_until_seconds{log_id="JuNkblhpISO8ND9HJDWbN5LNJFqI2BXTkzP9mRirRyM=",log_name="IPng Halloumi 2026h2a",state="usable",active="true"} 1789579562.656
+sct_auditing_ingested_until_seconds{log_id="JuNkblhpISO8ND9HJDWbN5LNJFqI2BXTkzP9mRirRyM=",log_name="IPng Halloumi 2026h2a",state="usable",active="true"} 1789580553.692
 sct_auditing_ingested_until_seconds{log_id="M3qex8rmqQSLdS8tk65+SyqQLSG0lxKdg+J5x1PJL4w=",log_name="Google PlumbersArms 2027h2",state="usable",active="true"} 1789580097.943
 sct_auditing_ingested_until_seconds{log_id="N6oHzCFvLm2RnHCdJNj3MbAPKxR8YhzAkaX6GoTYFt0=",log_name="DigiCert Wyvern 2027h2",state="usable",active="true"} 1789578306.580
 sct_auditing_ingested_until_seconds{log_id="PeSSqJiTrXBeeEbtIdSNyvutE56mTtHjSfkAsKLNpeI=",log_name="Google Solera 2027h1",state="none",active="false"} 1789577620.635
 sct_auditing_ingested_until_seconds{log_id="RMK9DOkUDmSlyUoBkwpaobs1lw4A7hEWiWgqHETXtWY=",log_name="Google Xenon 2027h1",state="usable",active="true"} 1789574716.797
-sct_auditing_ingested_until_seconds{log_id="ROgi/CurDpLu0On61pZkYCd20Bdg4IkFCckjobA/w38=",log_name="IPng Halloumi 2027h1",state="usable",active="true"} 1789580162.845
-sct_auditing_ingested_until_seconds{log_id="Rq+GPTs+5Z+ld96oJF02sNntIqIj9GF3QSKUUu6VUF8=",log_name="Geomys Tuscolo 2026h2",state="usable",active="true"} 1789579866.462
+sct_auditing_ingested_until_seconds{log_id="ROgi/CurDpLu0On61pZkYCd20Bdg4IkFCckjobA/w38=",log_name="IPng Halloumi 2027h1",state="usable",active="true"} 1789581063.624
+sct_auditing_ingested_until_seconds{log_id="Rq+GPTs+5Z+ld96oJF02sNntIqIj9GF3QSKUUu6VUF8=",log_name="Geomys Tuscolo 2026h2",state="usable",active="true"} 1789580557.462
 sct_auditing_ingested_until_seconds{log_id="RqI5Z8YNtkaHxm89+ZmUdpOmphEghFfVVefj0KHZtkY=",log_name="DigiCert Sphinx 2027h1",state="usable",active="true"} 1789578965.571
 sct_auditing_ingested_until_seconds{log_id="SZybad4dfOz8Nt7Nh2SmuFuvCoeAGdFVUvvp6ynd+MM=",log_name="DigiCert Sphinx 2026h1",state="rejected",active="false"} 1782863999.641
 sct_auditing_ingested_until_seconds{log_id="TGPcmOWcHauI9h6KPd6uj6tEozd7X5uUw/uhnPzBviY=",log_name="Cloudflare Nimbus 2027",state="usable",active="true"} 1789576604.418
@@ -137,39 +137,39 @@ sct_auditing_ingested_until_seconds{log_id="TefD7+U3ZpoMsB44OPqv3PCMmoBWM55wK1iV
 sct_auditing_ingested_until_seconds{log_id="Tw05u8NV28wWJ5ZuVAUVfMr3Lj90j0f+ewSeWlkVXL0=",log_name="Cloudflare Raio 2025h2b",state="absent",active="false"} 1783967053.806
 sct_auditing_ingested_until_seconds{log_id="VzRIzG4dLA3JS2nyh9Hv5IPHolxQxTILuzrep29usEE=",log_name="TrustAsia Luoshu 2027",state="usable",active="true"} 1789578964.793
 sct_auditing_ingested_until_seconds{log_id="W/beU/H7+sSaGFl0aUWhpqconV5wpg9IRQ5Ya7mucrg=",log_name="Let's Encrypt Sycamore 2025h2d",state="absent",active="false"} 1779457730.595
-sct_auditing_ingested_until_seconds{log_id="WW5sM4aUsllyolbIoOjdkEp26Ag92oc7AQg4KBQ87lk=",log_name="Geomys Tuscolo 2027h1",state="usable",active="true"} 1789580165.545
+sct_auditing_ingested_until_seconds{log_id="WW5sM4aUsllyolbIoOjdkEp26Ag92oc7AQg4KBQ87lk=",log_name="Geomys Tuscolo 2027h1",state="usable",active="true"} 1789581066.545
 sct_auditing_ingested_until_seconds{log_id="X/nA+6QtrHjOZELrGazggaKb1OL7U68MYzB55QWCBMk=",log_name="Google PlumbersArms 2027h1",state="usable",active="true"} 1789580164.836
-sct_auditing_ingested_until_seconds{log_id="Xk+hRjqD27R5prdS05bhyQxjDbDZ9sDelTzC7dZPUKM=",log_name="Google CoachAndHorses 2026h2",state="none",active="false"} 1789580164.391
-sct_auditing_ingested_until_seconds{log_id="YEyar3p/d18B1Ab8kg3ImesLHH34yVIb+voXdzuXi8k=",log_name="Sectigo Elephant 2027h1",state="usable",active="true"} 1789577017.362
+sct_auditing_ingested_until_seconds{log_id="Xk+hRjqD27R5prdS05bhyQxjDbDZ9sDelTzC7dZPUKM=",log_name="Google CoachAndHorses 2026h2",state="none",active="false"} 1789580764.450
+sct_auditing_ingested_until_seconds{log_id="YEyar3p/d18B1Ab8kg3ImesLHH34yVIb+voXdzuXi8k=",log_name="Sectigo Elephant 2027h1",state="usable",active="true"} 1789581127.367
 sct_auditing_ingested_until_seconds{log_id="YukAYASjB5VadUS01YSpYmjKHW5Fha3wkW3+X9wfBNs=",log_name="Google Solera 2026h2",state="none",active="false"} 1789574110.220
 sct_auditing_ingested_until_seconds{log_id="ZBHEbKQS7KeJHKICLgC8q08oB9QeNSer6v7VA8l9zfA=",log_name="DigiCert Wyvern 2026h1",state="rejected",active="false"} 1782863999.650
 sct_auditing_ingested_until_seconds{log_id="aYS3IzyydLLRRn2l4EDXH+upCiHniGU3Srn5vPhocjc=",log_name="Google ParcelYard 2027h2",state="usable",active="true"} 1789579956.738
 sct_auditing_ingested_until_seconds{log_id="atJoPkfo0oBkkUI/1kQCGiJuzbhhm+1acN9ps2hPqi0=",log_name="Google CoachAndHorses 2027h1",state="none",active="false"} 1789580160.552
-sct_auditing_ingested_until_seconds{log_id="bP5QGUOoXqkWvFLRM+TcyR7xQRx9JYQg0XOAnhgY6zo=",log_name="Let's Encrypt Sycamore 2026h2",state="usable",active="true"} 1789580164.606
+sct_auditing_ingested_until_seconds{log_id="bP5QGUOoXqkWvFLRM+TcyR7xQRx9JYQg0XOAnhgY6zo=",log_name="Let's Encrypt Sycamore 2026h2",state="usable",active="true"} 1789580764.606
 sct_auditing_ingested_until_seconds{log_id="cX6V88I4im2x44RJPTHhWqliCHYtQgDgBQzQZ7WmYeI=",log_name="Geomys Tuscolo 2026h1",state="rejected",active="false"} 1783468799.997
-sct_auditing_ingested_until_seconds{log_id="dNudWPfUfp39eHoWKpkcGM9pjafHKZGMmhiwRQ26RLw=",log_name="TrustAsia CT2026A",state="usable",active="true"} 1789578849.042
+sct_auditing_ingested_until_seconds{log_id="dNudWPfUfp39eHoWKpkcGM9pjafHKZGMmhiwRQ26RLw=",log_name="TrustAsia CT2026A",state="usable",active="true"} 1789579820.076
 sct_auditing_ingested_until_seconds{log_id="dZIIKK86Y1XymO0JfjR1dfm5hDwR4TkfV0QpnxyujO4=",log_name="Geomys Trastevere 2027h2",state="qualified",active="true"} 1789579565.810
 sct_auditing_ingested_until_seconds{log_id="fz035/iSPY5xZb6w0+q+5yoivkbAy4TEFtTkuYJky8I=",log_name="IPng Halloumi 2026h1",state="rejected",active="false"} 1784127033.817
 sct_auditing_ingested_until_seconds{log_id="ijgQv0CPWs97dN4gwHGQO3F5yrDb12jv+hD2KY6gaAw=",log_name="Cloudflare Raio 2027h1a",state="absent",active="false"} 1783967521.729
 sct_auditing_ingested_until_seconds{log_id="j5ct6c9T2eqhZDHY6vWLWGZ8/QysT5c0VLGZaVHvlYc=",log_name="Geomys Trastevere 2028h1",state="qualified",active="true"} 1789579565.515
-sct_auditing_ingested_until_seconds{log_id="jspHC6zeavOiBrCkeoS3Rv4fxr+VPiXmm07kAkjzxug=",log_name="Let's Encrypt Sycamore 2027h1",state="usable",active="true"} 1789579564.862
+sct_auditing_ingested_until_seconds{log_id="jspHC6zeavOiBrCkeoS3Rv4fxr+VPiXmm07kAkjzxug=",log_name="Let's Encrypt Sycamore 2027h1",state="usable",active="true"} 1789580764.861
 sct_auditing_ingested_until_seconds{log_id="lE5Dh/rswe+B8xkkJqgYZQHH0184AgE/cmd9VTcuGdg=",log_name="DigiCert Sphinx 2026h2",state="usable",active="true"} 1789578965.545
 sct_auditing_ingested_until_seconds{log_id="lpdkv1VYl633Q4doNwhCd+nwOtX2pPM2bkakPw/KqcY=",log_name="Google Xenon 2026h1",state="rejected",active="false"} 1786139490.379
 sct_auditing_ingested_until_seconds{log_id="okkM3NuOM6QAMhdg1tTVGiA2GR6nfZaL4mqKAPb///c=",log_name="Sectigo Elephant 2027h2",state="usable",active="true"} 1789575379.902
-sct_auditing_ingested_until_seconds{log_id="ooEAGHNOF24dR+CVQPOBulRml81jqENQcW64CU7a8Q0=",log_name="Let's Encrypt Willow 2027h1",state="usable",active="true"} 1789579564.654
+sct_auditing_ingested_until_seconds{log_id="ooEAGHNOF24dR+CVQPOBulRml81jqENQcW64CU7a8Q0=",log_name="Let's Encrypt Willow 2027h1",state="usable",active="true"} 1789580764.654
 sct_auditing_ingested_until_seconds{log_id="pcl4kl1XRheChw3YiWYLXFVki30AQPLsB2hR0YhpGfc=",log_name="Let's Encrypt Sycamore 2026h1",state="rejected",active="false"} 1782345599.843
-sct_auditing_ingested_until_seconds{log_id="ppWirZJtb5lujvxJAUJX2LvwRqfWJYm4jcLXh2x45S8=",log_name="Let's Encrypt Willow 2027h2",state="usable",active="true"} 1789577029.550
-sct_auditing_ingested_until_seconds{log_id="qCbL4wrGNRJGUz/gZfFPGdluGQgTxB3ZbXkAsxI8VSc=",log_name="Let's Encrypt Willow 2026h2",state="usable",active="true"} 1789580165.445
-sct_auditing_ingested_until_seconds{log_id="r2eIO1ewTt2Pptl+9i6o64EKx3Fg8CReVdYML+eFhzo=",log_name="Sectigo Elephant 2026h2",state="usable",active="true"} 1789576999.939
+sct_auditing_ingested_until_seconds{log_id="ppWirZJtb5lujvxJAUJX2LvwRqfWJYm4jcLXh2x45S8=",log_name="Let's Encrypt Willow 2027h2",state="usable",active="true"} 1789580765.550
+sct_auditing_ingested_until_seconds{log_id="qCbL4wrGNRJGUz/gZfFPGdluGQgTxB3ZbXkAsxI8VSc=",log_name="Let's Encrypt Willow 2026h2",state="usable",active="true"} 1789580765.444
+sct_auditing_ingested_until_seconds{log_id="r2eIO1ewTt2Pptl+9i6o64EKx3Fg8CReVdYML+eFhzo=",log_name="Sectigo Elephant 2026h2",state="usable",active="true"} 1789581136.976
 sct_auditing_ingested_until_seconds{log_id="sMyD5aX5fWuvfAnMKEkEhyrH6IsTLGNQt8b9JuFsbHc=",log_name="Google Test Tube",state="none",active="false"} 1789574717.732
-sct_auditing_ingested_until_seconds{log_id="utuIpG+cr6QJDoLlk1bbbni0pT9YLbCBl5UkLym2jJg=",log_name="Google ParcelYard 2026h2",state="usable",active="true"} 1789580164.696
+sct_auditing_ingested_until_seconds{log_id="utuIpG+cr6QJDoLlk1bbbni0pT9YLbCBl5UkLym2jJg=",log_name="Google ParcelYard 2026h2",state="usable",active="true"} 1789580765.052
 sct_auditing_ingested_until_seconds{log_id="uuKpKTLFwF0fpU00gTDwm/yIMxZKFaH7vvUmKDJWyAs=",log_name="Cloudflare Raio 2026h2a",state="absent",active="false"} 1783967653.713
 sct_auditing_ingested_until_seconds{log_id="w78Dp+HKiEHGB7rj/0Jw/KXsRbGG675OLPP8d4Yw9fY=",log_name="Google Crucible",state="none",active="false"} 1789574670.396
 sct_auditing_ingested_until_seconds{log_id="wjF+V0UZo0XufzjespBB68fCIVoiv3/Vta12mtkOUs0=",log_name="DigiCert Wyvern 2026h2",state="usable",active="true"} 1789578965.518
 sct_auditing_ingested_until_seconds{log_id="y6VZ4BSDyZ+U7N2er0ezmWM1bZ/1wShe6un50SqgTMc=",log_name="Geomys Trastevere 2028h2",state="qualified",active="true"} 1789579566.062
 sct_auditing_ingested_until_seconds{log_id="yEuQege+qimmFMJFhLej9mJDlGh7Jf5ig4tx7EIq0vk=",log_name="Google Solera 2026h1",state="none",active="false"} 1782781328.177
 sct_auditing_ingested_until_seconds{log_id="yKPEf8ezrbk1awE/anoSbeM6TkOlxkb5l605dZkdz5o=",log_name="Sectigo Tiger 2026h2",state="usable",active="true"} 1789577052.602
-sct_auditing_ingested_until_seconds{log_id="yMaDuhp5vKPNGyZsbZ6MzSf0hFEMerHyV59nUhBYOgM=",log_name="Geomys Trastevere 2026h2",state="qualified",active="true"} 1789579957.365
+sct_auditing_ingested_until_seconds{log_id="yMaDuhp5vKPNGyZsbZ6MzSf0hFEMerHyV59nUhBYOgM=",log_name="Geomys Trastevere 2026h2",state="qualified",active="true"} 1789580765.365
 sct_auditing_ingested_until_seconds{log_id="yzj3FYl8hKFEX1vB3fvJbvKaWc1HCmkFhbDLFMMUWOc=",log_name="Cloudflare Nimbus 2026",state="usable",active="true"} 1789575454.686
 sct_auditing_ingested_until_seconds{log_id="zPsPaoVxCWX+lZtTzumyfCLphVwNl422qX5UwP5MDbA=",log_name="Cloudflare Nimbus 2025",state="absent",active="false"} 1783526281.171
 # HELP sct_auditing_logs_total Number of logs reported by the last successful scrape.
@@ -180,7 +180,7 @@ sct_auditing_logs_total 85
 sct_auditing_scrape_success 1
 # HELP sct_auditing_scrape_timestamp_seconds Unix time of the most recent scrape attempt.
 # TYPE sct_auditing_scrape_timestamp_seconds gauge
-sct_auditing_scrape_timestamp_seconds 1789580533
+sct_auditing_scrape_timestamp_seconds 1789581348
 # HELP sct_auditing_open_incidents Incidents inside their one-week cooldown window.
 # TYPE sct_auditing_open_incidents gauge
 sct_auditing_open_incidents 0
