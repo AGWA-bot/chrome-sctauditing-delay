@@ -28,8 +28,9 @@ It produces as outputs:
   A log whose ingestion delay exceeds 24 hours opens an event. A log gets at
   most one event per week; later incidents fold into the open event. Entry
   timestamps never change after publication so feed readers (notably Slack)
-  do not repost them. Only active logs are considered, since a retired log's
-  delay grows without bound by design.
+  do not repost them. Only active logs that are not `readonly` are considered:
+  a retired log's delay grows without bound by design, and so does a frozen
+  one's, since a `readonly` log takes no new entries to ingest.
 
 There's an index.html which renders it with uPlot.
 
