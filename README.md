@@ -10,7 +10,9 @@ timestamp per log, plus its own `now`; the delay is the difference between them.
 Log names come from [Cert Spotter's ALL.json](https://loglist.certspotter.org/ALL.json)
 and log states from
 [Chrome's all_logs_list.json](https://www.gstatic.com/ct/log_list/v3/all_logs_list.json).
-A log is active when its state is `pending`, `qualified`, `usable` or `readonly`.
+A log is active when its state is `pending`, `qualified` or `usable`. A
+`readonly` (frozen) log is not: it takes no new entries, so its delay grows
+without bound, just as a retired log's does.
 
 It produces as outputs:
 
@@ -28,9 +30,8 @@ It produces as outputs:
   A log whose ingestion delay exceeds 24 hours opens an event. A log gets at
   most one event per week; later incidents fold into the open event. Entry
   timestamps never change after publication so feed readers (notably Slack)
-  do not repost them. Only active logs that are not `readonly` are considered:
-  a retired log's delay grows without bound by design, and so does a frozen
-  one's, since a `readonly` log takes no new entries to ingest.
+  do not repost them. Only active logs are considered, since a retired or
+  frozen log's delay grows without bound by design.
 
 There's an index.html which renders it with uPlot.
 

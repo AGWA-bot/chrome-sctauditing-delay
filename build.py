@@ -25,9 +25,10 @@ from datetime import datetime, timezone
 NAMES_URL = "https://loglist.certspotter.org/ALL.json"   # readable names for every log
 STATE_URL = "https://www.gstatic.com/ct/log_list/v3/all_logs_list.json"  # Chrome's own states
 
-# Chrome's CT log states. A log counts as active in these four; "rejected" and "retired"
-# do not, nor does a log carrying no state or missing from the list altogether.
-ACTIVE_STATES = frozenset({"pending", "qualified", "usable", "readonly"})
+# Chrome's CT log states. A log counts as active in these three. "readonly" does not: a
+# frozen log takes no new entries, so its delay grows without bound like a retired one's.
+# Nor do "rejected" and "retired", nor a log with no state or missing from the list.
+ACTIVE_STATES = frozenset({"pending", "qualified", "usable"})
 WINDOW_DAYS = 14          # how much history index.html fetches; git holds the rest
 METRIC_PREFIX = "sct_auditing"
 

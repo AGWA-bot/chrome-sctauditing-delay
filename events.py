@@ -19,11 +19,9 @@ absorbs later runs and its title and body change. Feed readers -- Slack in
 particular -- repost an entry whose `updated` moves, so this is the property that
 keeps a long-running incident from being announced over and over.
 
-Only active, unfrozen logs are considered. A retired log's delay grows without
-bound by design, so including them would open an incident for every one of them
-forever. A readonly (frozen) log is still active -- Chrome accepts its SCTs -- but
-it takes no new entries, so its ingestedUntil stops where the log froze and its
-delay grows without bound in exactly the same way.
+Only active logs are considered. A retired or readonly (frozen) log's delay grows
+without bound by design, so including them would open an incident for every one
+of them forever.
 """
 import json
 import os
@@ -33,7 +31,6 @@ from xml.sax.saxutils import escape, quoteattr
 THRESHOLD = 24 * 3600          # a delay over this is an incident
 COOLDOWN = 7 * 24 * 3600       # at most one event per log per week
 RETENTION = 90 * 24 * 3600     # how long events stay in the feed
-FROZEN_STATES = frozenset({"readonly"})   # active, but never ingests anything new
 
 
 def iso(ts):
@@ -101,15 +98,10 @@ def open_event(events, log_id, now):
     return None
 
 
-def monitored(log):
-    """Whether a registry entry is eligible for incidents: active and not frozen."""
-    return bool(log.get("active")) and log.get("state") not in FROZEN_STATES
-
-
 def update(state, rows, registry, now, authority):
     """Advance `state` over every sample newer than the last evaluation."""
     logs = registry["logs"]
-    watched = [monitored(l) for l in logs]
+    active = [bool(l.get("active")) for l in logs]
     names = {l["id"]: l["name"] for l in logs}
     runs = build_runs(rows, len(logs))
 
@@ -122,7 +114,7 @@ def update(state, rows, registry, now, authority):
     head = rows[0]["t"] if rows else None
     for i, log in enumerate(logs):
         carried = state["ongoing"].get(log["id"])
-        if (watched[i] and runs[i] and runs[i][0][0] == head and carried is not None
+        if (active[i] and runs[i] and runs[i][0][0] == head and carried is not None
                 and carried < head <= evaluated):
             runs[i][0] = (carried, runs[i][0][1])
 
@@ -130,7 +122,7 @@ def update(state, rows, registry, now, authority):
 
     for t in times:
         for i, log in enumerate(logs):
-            if not watched[i]:
+            if not active[i]:
                 continue
             hit = condition_at(runs[i], t)
             if hit is None:
@@ -169,7 +161,7 @@ def update(state, rows, registry, now, authority):
     state["evaluated"] = iso(now)
     state["ongoing"] = {}
     for i, log in enumerate(logs):
-        hit = condition_at(runs[i], now) if watched[i] else None
+        hit = condition_at(runs[i], now) if active[i] else None
         if hit is not None:
             state["ongoing"][log["id"]] = hit[0]
 

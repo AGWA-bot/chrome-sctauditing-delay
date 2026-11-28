@@ -17,9 +17,6 @@ REGISTRY = {"logs": [
     {"id": "BBBB", "name": "Active Two", "active": True},
     {"id": "CCCC", "name": "Retired Log", "active": False},
 ]}
-FROZEN = {"logs": REGISTRY["logs"] + [
-    {"id": "DDDD", "name": "Frozen Log", "state": "readonly", "active": True},
-]}
 
 results = []
 
@@ -52,13 +49,6 @@ check(all(e["log_id"] != "CCCC" for e in st["events"]),
       "an inactive log never opens an event even though it is always over")
 check(st["events"][0]["published"] == events.iso(T0 + HOUR),
       "published is the sample where it crossed, not the run start of anything else")
-
-# --- frozen logs ---------------------------------------------------------
-st = events.update(events.load_state("/nonexistent"),
-                   rows([(0, [OK, OK, OK, OVER]), (HOUR, [OK, OK, OK, OVER])]),
-                   FROZEN, T0 + HOUR, "example.test")
-check(st["events"] == [],
-      "a readonly log never opens an event, though it is active and always over")
 
 # --- one event per log per week -----------------------------------------
 spec = [(0, [OVER, OK, OK]),          # run 1 opens
