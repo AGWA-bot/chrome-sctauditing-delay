@@ -6,6 +6,13 @@ samples over the threshold form a run, and each run is reported at most once. A
 log gets at most one event per `COOLDOWN`: while an event is open, later runs
 fold into it, updating the peak delay and the window it covers.
 
+A run is identified by the time of its first sample over the threshold. The
+history is a rolling window, so a run that outlasts it loses its first sample,
+and the oldest remaining sample would look like the start of a new run. To stop
+that, the state carries each log's ongoing run (`ongoing`) from one evaluation to
+the next, and a run that starts at the head of the window keeps the start it had
+before.
+
 Entry timestamps never change after publication. `published` and `updated` are
 both frozen when the event is created and are never rewritten, even as the event
 absorbs later runs and its title and body change. Feed readers -- Slack in
@@ -107,6 +114,18 @@ def update(state, rows, registry, now, authority):
     runs = build_runs(rows, len(logs))
 
     evaluated = parse_iso(state["evaluated"]) if state.get("evaluated") else 0
+
+    # A run that starts at the head of the window may have started earlier, in rows
+    # that have since aged out. If the last evaluation saw the head row and had this
+    # log in a run that began even earlier, the head row was part of that same run,
+    # so restore its start.
+    head = rows[0]["t"] if rows else None
+    for i, log in enumerate(logs):
+        carried = state["ongoing"].get(log["id"])
+        if (watched[i] and runs[i] and runs[i][0][0] == head and carried is not None
+                and carried < head <= evaluated):
+            runs[i][0] = (carried, runs[i][0][1])
+
     times = sorted({r["t"] for r in rows if r["t"] > evaluated and r["t"] <= now})
 
     for t in times:
@@ -148,9 +167,17 @@ def update(state, rows, registry, now, authority):
             event["last_seen"] = iso(t)
 
     state["evaluated"] = iso(now)
+    state["ongoing"] = {}
+    for i, log in enumerate(logs):
+        hit = condition_at(runs[i], now) if watched[i] else None
+        if hit is not None:
+            state["ongoing"][log["id"]] = hit[0]
+
     cutoff = now - RETENTION
+    live = {f"{log_id} {start}" for log_id, start in state["ongoing"].items()}
     state["events"] = [e for e in state["events"] if parse_iso(e["published"]) >= cutoff]
-    state["reported"] = {k: v for k, v in state["reported"].items() if parse_iso(v) >= cutoff}
+    state["reported"] = {k: v for k, v in state["reported"].items()
+                         if parse_iso(v) >= cutoff or k in live}
     return state
 
 
@@ -214,6 +241,7 @@ def load_state(path):
     state.setdefault("evaluated", None)
     state.setdefault("events", [])
     state.setdefault("reported", {})
+    state.setdefault("ongoing", {})
     return state
 
 

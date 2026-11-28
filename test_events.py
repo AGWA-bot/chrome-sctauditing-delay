@@ -97,6 +97,34 @@ st = run([(i * HOUR, [OVER, OK, OK]) for i in range(9 * 24)])   # 9 continuous d
 check(len(st["events"]) == 1,
       f"one unbroken 9-day run yields exactly one event, not one per week ({len(st['events'])})")
 
+# --- a run that outlasts the rolling history window ----------------------
+def replay(spec, window=14 * DAY):
+    """Evaluate sample by sample, as build.py does, over a rolling window."""
+    state = events.load_state("/nonexistent")
+    data = rows(spec)
+    for k, row in enumerate(data):
+        kept = [r for r in data[:k + 1] if r["t"] >= row["t"] - window]
+        state = events.update(state, kept, REGISTRY, row["t"], "example.test")
+    return state
+
+st = replay([(i * 6 * HOUR, [OVER, OK, OK]) for i in range(4 * 25)])   # 25 days over
+check(len(st["events"]) == 1,
+      f"a 25-day run under a 14-day window yields one event, not a new one as it ages out ({len(st['events'])})")
+check(all(e["runs"] == [T0] for e in st["events"]),
+      f"the run keeps its true start as its first sample ages out ({[e['runs'] for e in st['events']]})")
+check(st["ongoing"] == {"AAAA": T0}, f"the ongoing run is carried in the state ({st['ongoing']})")
+
+st = replay([(i * 6 * HOUR, [OVER, OK, OK]) for i in range(4 * 15)])   # 15 days over
+check(len(st["events"]) == 1,
+      f"a run whose start has aged out does not reopen inside the cooldown ({len(st['events'])})")
+
+spec = ([(i * 6 * HOUR, [OVER, OK, OK]) for i in range(4)]                  # day 0: run 1
+        + [(i * 6 * HOUR, [OK, OK, OK]) for i in range(4, 4 * 15)]          # days 1-14: fine
+        + [(i * 6 * HOUR, [OVER, OK, OK]) for i in range(4 * 15, 4 * 16)])  # day 15: run 2
+st = replay(spec)
+check(len(st["events"]) == 2 and st["events"][1]["runs"] == [T0 + 15 * DAY],
+      "a run after a recovery is still a run of its own")
+
 # --- idempotency ---------------------------------------------------------
 spec = [(0, [OVER, OK, OK]), (HOUR, [OK] * 3)]
 once = run(spec)
